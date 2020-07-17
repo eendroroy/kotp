@@ -1,19 +1,49 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
-    id 'com.adarshr.test-logger' version '2.1.0'
+    id "org.jetbrains.kotlin.jvm" version "1.3.72"
+    id "com.adarshr.test-logger" version "2.1.0"
+    id "com.jfrog.bintray" version "1.8.5"
+    id "maven-publish"
 }
 
-group 'com.github.eendroroy'
-version '0.0.1'
+group "com.github.eendroroy"
+version "0.1.0"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "commons-codec:commons-codec:1.14"
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
+}
+
+publishing {
+    publications {
+        binTrayPublish(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+bintray {
+    user = project.findProperty("bintray.user") ?: System.getenv("BINTRAY_USER")
+    key = project.findProperty("bintray.key") ?: System.getenv("BINTRAY_KEY")
+    publications = ["binTrayPublish"]
+    pkg {
+        repo = project.group
+        name = project.name
+        userOrg = user
+        licenses = ["MIT"]
+        vcsUrl = "https://github.com/eendroroy/kotp.git"
+        labels = ["otp-generator"]
+        publicDownloadNumbers = true
+        version {
+            name = project.version
+            desc = "OTP generator"
+        }
+    }
 }
 
 compileKotlin {
