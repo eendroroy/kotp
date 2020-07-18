@@ -1,5 +1,7 @@
 plugins {
+    id "maven"
     id "maven-publish"
+    id "signing"
     id "org.jetbrains.kotlin.jvm" version "1.3.72"
     id "com.adarshr.test-logger" version "2.1.0"
     id "com.jfrog.bintray" version "1.8.5"
@@ -12,7 +14,7 @@ repositories {
 
 group "com.github.eendroroy"
 version "0.1.0"
-sourceCompatibility = '1.8'
+sourceCompatibility = "1.8"
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
@@ -20,13 +22,22 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
 }
 
+task javadocJar(type: Jar) {
+    archiveClassifier = "javadoc"
+    from javadoc
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier = 'sources'
+    archiveClassifier = "sources"
     from sourceSets.main.allSource
 }
 
 artifacts {
-    archives sourcesJar
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
 }
 
 publishing {
@@ -63,6 +74,50 @@ bintray {
         version {
             name = project.version
             desc = "OTP generator"
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name project.name
+                packaging "jar"
+                description "OTP Generator"
+                url "https://github.com/eendroroy/kotp.git"
+
+                scm {
+                    connection "scm:git:https://github.com/eendroroy/kotp.git"
+                    developerConnection "scm:git:https://github.com/eendroroy/kotp.git"
+                    url "https://github.com/eendroroy/kotp.git"
+                }
+
+                licenses {
+                    license {
+                        name "MIT"
+                        url "http://opensource.org/licenses/MIT"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id "eendroroy"
+                        name "indrajit"
+                        email "eendroroy@gmail.com"
+                    }
+                }
+            }
         }
     }
 }
