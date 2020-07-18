@@ -6,7 +6,7 @@ import java.nio.charset.Charset
 /**
  * @author indrajit
  */
-internal open class HOTP(
+open class HOTP(
     private val secret: String,
     private val digits: Int = 6,
     digest: Digest = Digest.SHA1

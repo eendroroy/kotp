@@ -23,14 +23,14 @@ Heavily inspired by [rotp](https://github.com/mdp/rotp).
 <dependency>
 	<groupId>com.github.eendroroy</groupId>
 	<artifactId>kotp</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 </dependency>
 ```
 
 *Gradle*
 ```groovy
 dependencies {
-    implementation 'com.github.eendroroy:kotp:0.1.0'
+    implementation 'com.github.eendroroy:kotp:0.1.1'
 }
 ```
 

@@ -11,7 +11,7 @@ import kotlin.math.pow
 /**
  * @author indrajit
  */
-internal open class OTP(
+open class OTP(
     private val secret: String,
     private val digits: Int = 6,
     private val digest: Digest = Digest.SHA1
