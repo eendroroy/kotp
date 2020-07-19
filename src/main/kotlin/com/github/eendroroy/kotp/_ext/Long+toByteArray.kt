@@ -1,11 +1,11 @@
-package com.github.eendroroy.kotp._byteString
+package com.github.eendroroy.kotp._ext
 
 import java.util.LinkedList
 
 /**
  * @author indrajit
  */
-fun Int.toByteArray(padding: Int = 8): ByteArray {
+fun Long.toByteArray(padding: Int = 8): ByteArray {
     if (this < 0) throw IllegalArgumentException("#toByteArray requires a positive number")
     var numTemp = this
     return LinkedList<Byte>().apply {

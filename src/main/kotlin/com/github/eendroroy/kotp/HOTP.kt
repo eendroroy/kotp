@@ -7,7 +7,7 @@ import java.nio.charset.Charset
 /**
  * @author indrajit
  */
-open class HOTP(
+class HOTP(
     private val secret: Base32String,
     private val digits: Int = 6,
     digest: Digest = Digest.SHA1

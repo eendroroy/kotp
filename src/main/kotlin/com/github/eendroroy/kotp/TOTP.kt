@@ -9,7 +9,7 @@ import java.util.Date
 /**
  * @author indrajit
  */
-open class TOTP(
+class TOTP(
     private val secret: Base32String,
     private val digits: Int = 6,
     private val digest: Digest = Digest.SHA1,

@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp._byteString.toByteArray
+import com.github.eendroroy.kotp._ext.toByteArray
 import com.github.eendroroy.kotp.base32.Base32String
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
