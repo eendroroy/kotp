@@ -4,5 +4,5 @@
 - Added `HOTPConfig` and `TOTPConfig`
 
 **Deprecations**
-- instead of `HOTP(Base32String, Int, Digest)` use: `HOTP(HOTPConfig)`
-- instead of `TOTP(Base32String, Int, Digest, Int, String)` use: `HOTP(TOTPConfig)`
+- `HOTP(Base32String, Int, Digest)` (use: `HOTP(HOTPConfig)`)
+- `TOTP(Base32String, Int, Digest, Int, String)` (use: `HOTP(TOTPConfig)`)
