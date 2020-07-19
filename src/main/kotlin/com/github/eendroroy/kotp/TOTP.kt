@@ -1,5 +1,6 @@
 package com.github.eendroroy.kotp
 
+import com.github.eendroroy.kotp.base32.Base32String
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.util.Calendar
@@ -9,7 +10,7 @@ import java.util.Date
  * @author indrajit
  */
 open class TOTP(
-    private val secret: String,
+    private val secret: Base32String,
     private val digits: Int = 6,
     private val digest: Digest = Digest.SHA1,
     private val interval: Int = 30,
@@ -43,7 +44,7 @@ open class TOTP(
 
     fun provisioningUri(name: String): String {
         val issuerStr = if (issuer.isNotEmpty()) "${encode(issuer)}:" else ""
-        val query = "secret=${encode(secret)}" +
+        val query = "secret=${encode(secret.raw())}" +
                 "&period=${interval}" +
                 "&issuer=${encode(issuer)}" +
                 "&digits=${digits}" +

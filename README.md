@@ -23,23 +23,25 @@ Heavily inspired by [rotp](https://github.com/mdp/rotp).
 <dependency>
 	<groupId>com.github.eendroroy</groupId>
 	<artifactId>kotp</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 </dependency>
 ```
 
 *Gradle*
 ```groovy
 dependencies {
-    implementation 'com.github.eendroroy:kotp:0.1.1'
+    implementation 'com.github.eendroroy:kotp:0.1.2'
 }
 ```
+
+### [Change-set](CHANGESET.md)
 
 ### Usage
 
 ```java
-    HOTP htop = new HOTP("secret".encodeBase32());
-    HOTP htop = new HOTP("secret".encodeBase32(), digits = 6);
-    HOTP htop = new HOTP("secret".encodeBase32(), digits = 6, digest = Digest.SHA1);
+    HOTP htop = new HOTP(Base32.encode("secret"));
+    HOTP htop = new HOTP(Base32.encode("secret"), digits = 6);
+    HOTP htop = new HOTP(Base32.encode("secret"), digits = 6, digest = Digest.SHA1);
 
 
     htop.at(1)
@@ -48,9 +50,9 @@ dependencies {
 ```
 
 ```java
-    TOTP htop = new HOTP("secret".encodeBase32(), issuer = "kotp-lib");
-    TOTP htop = new HOTP("secret".encodeBase32(), digits = 6, issuer = "kotp-lib");
-    TOTP htop = new HOTP("secret".encodeBase32(), digits = 6, digest = Digest.SHA1, issuer = "kotp-lib", interval = 60);
+    TOTP htop = new HOTP(Base32.encode("secret"), issuer = "kotp-lib");
+    TOTP htop = new HOTP(Base32.encode("secret"), digits = 6, issuer = "kotp-lib");
+    TOTP htop = new HOTP(Base32.encode("secret"), digits = 6, digest = Digest.SHA1, issuer = "kotp-lib", interval = 60);
 
 
     htop.at(Calendar.getInstance().time)

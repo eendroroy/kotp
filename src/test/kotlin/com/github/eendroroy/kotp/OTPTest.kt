@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp._base32.encodeBase32
+import com.github.eendroroy.kotp.base32.Base32
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
@@ -13,7 +13,7 @@ class OTPTest {
     fun testOtpGenerationUsingDigest(): Collection<DynamicTest?>? {
         return Digest.values().map { digest ->
             DynamicTest.dynamicTest("testOtpGenerationUsing => ${digest.name}") {
-                val otp = OTP(secret = "secret".encodeBase32(), digits = 6, digest = digest).generateOtp(123)
+                val otp = OTP(secret = Base32.encode("secret"), digits = 6, digest = digest).generateOtp(123)
                 assertEquals(6, otp.length)
             }
         }
@@ -23,7 +23,7 @@ class OTPTest {
     fun testGeneratedOtpLengthIsCorrect(): Collection<DynamicTest?>? {
         return listOf(1, 2, 3, 4, 6, 8, 10, 12, 24).map { len ->
             DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $len") {
-                val otp1 = OTP(secret = "secret".encodeBase32(), digits = len).generateOtp(123)
+                val otp1 = OTP(secret = Base32.encode("secret"), digits = len).generateOtp(123)
                 assertEquals(len, otp1.length)
             }
         }
@@ -38,7 +38,7 @@ class OTPTest {
             Pair(312, "203944"), Pair(321, "827117")
         ).map { pair ->
             DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => generateOtp(${pair.first}): ${pair.second}") {
-                val otp = OTP(secret = "secret".encodeBase32()).generateOtp(pair.first)
+                val otp = OTP(secret = Base32.encode("secret")).generateOtp(pair.first)
                 assertEquals(pair.second, otp)
             }
         }

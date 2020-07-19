@@ -1,5 +1,6 @@
 package com.github.eendroroy.kotp
 
+import com.github.eendroroy.kotp.base32.Base32String
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
@@ -7,7 +8,7 @@ import java.nio.charset.Charset
  * @author indrajit
  */
 open class HOTP(
-    private val secret: String,
+    private val secret: Base32String,
     private val digits: Int = 6,
     digest: Digest = Digest.SHA1
 ) : OTP(secret, digits, digest) {
@@ -21,7 +22,7 @@ open class HOTP(
     }
 
     fun provisioningUri(name: String, initialCount: Int = 0): String {
-        val query = "secret=${encode(secret)}" +
+        val query = "secret=${encode(secret.raw())}" +
                 "&counter=${encode(initialCount.toString())}" +
                 "&digits=${encode(digits.toString())}"
         return "otpauth://hotp/${encode(name)}?${query}"

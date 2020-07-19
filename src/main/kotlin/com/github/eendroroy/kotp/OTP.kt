@@ -1,7 +1,7 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp._base32.decodeBase32
 import com.github.eendroroy.kotp._byteString.toByteArray
+import com.github.eendroroy.kotp.base32.Base32String
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import javax.crypto.Mac
@@ -12,14 +12,14 @@ import kotlin.math.pow
  * @author indrajit
  */
 open class OTP(
-    private val secret: String,
+    private val secret: Base32String,
     private val digits: Int = 6,
     private val digest: Digest = Digest.SHA1
 ) {
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     fun generateOtp(input: Int): String {
         val hMac = Mac.getInstance(digest.toString()).let {
-            it.init(SecretKeySpec(secret.decodeBase32().toByteArray(), digest.toString()))
+            it.init(SecretKeySpec(secret.decode(), digest.toString()))
             return@let it.doFinal(input.toByteArray())
         }
         val offset = hMac.last().toInt().and(0xf)

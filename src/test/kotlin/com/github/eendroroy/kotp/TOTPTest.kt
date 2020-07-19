@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp._base32.encodeBase32
+import com.github.eendroroy.kotp.base32.Base32
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DynamicTest
@@ -13,7 +13,7 @@ import java.util.Calendar
 class TOTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?>? {
-        val totp = TOTP(secret = "secret".encodeBase32(), issuer = "kotp_lib")
+        val totp = TOTP(secret = Base32.encode("secret"), issuer = "kotp_lib")
         return listOf(
             listOf(0, "814628", 30),
             listOf(1_111_111_111, "001123", 30),
@@ -72,7 +72,7 @@ class TOTPTest {
         ).map { params ->
             DynamicTest.dynamicTest("testProvisioningUri") {
                 val uri = TOTP(
-                    secret = params[1].toString().encodeBase32(),
+                    secret = Base32.encode(params[1].toString()),
                     issuer = params[2] as String,
                     interval = params[3] as Int,
                     digits = params[4] as Int
