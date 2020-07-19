@@ -1,6 +1,7 @@
 package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32
+import com.github.eendroroy.kotp.config.TOTPConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DynamicTest
@@ -13,7 +14,7 @@ import java.util.Calendar
 class TOTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?>? {
-        val totp = TOTP(secret = Base32.encode("secret"), issuer = "kotp_lib")
+        val totp = TOTP(TOTPConfig(Base32.encode("secret"), "kotp_lib"))
         return listOf(
             listOf(0, "814628", 30),
             listOf(1_111_111_111, "001123", 30),
@@ -72,12 +73,29 @@ class TOTPTest {
         ).map { params ->
             DynamicTest.dynamicTest("testProvisioningUri") {
                 val uri = TOTP(
-                    secret = Base32.encode(params[1].toString()),
-                    issuer = params[2] as String,
-                    interval = params[3] as Int,
-                    digits = params[4] as Int
+                    TOTPConfig(
+                        Base32.encode(params[1].toString()),
+                        params[2] as String,
+                        digits = params[4] as Int,
+                        interval = params[3] as Int
+                    )
                 ).provisioningUri(params[0].toString())
                 assertEquals(params[5], uri)
+            }
+        }
+    }
+
+    @TestFactory
+    fun testBackwardCompatibility(): Collection<DynamicTest?>? {
+        @Suppress("DEPRECATION")
+        val totpOld = TOTP(Base32.encode("secret"), issuer = "kotp-lib")
+        val totpNew = TOTP(TOTPConfig(Base32.encode("secret"), "kotp-lib"))
+
+        return listOf(1, 2, 3, 4, 1_111_111_111, 1_234_567_890, 2_000_000_000, 2_111_333_222).map {
+            DynamicTest.dynamicTest("testBackwardCompatibility => time: $it") {
+                val time = Calendar.getInstance().apply { timeInMillis = it * 1_000L }.time
+                assertEquals(totpNew.at(time), totpOld.at(time))
+                assertEquals(totpNew.provisioningUri("kotp"), totpOld.provisioningUri("kotp"))
             }
         }
     }

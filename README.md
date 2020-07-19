@@ -11,9 +11,7 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/pulls?q=is%3Apr+is%3Aclosed)
 
-Kotlin OTP generation library.
-
-Heavily inspired by [rotp](https://github.com/mdp/rotp).
+Kotlin(/Java) OTP generation library.
 
 ### Installation
 
@@ -36,31 +34,7 @@ dependencies {
 
 ### [Change-set](CHANGESET.md)
 
-### Usage
-
-```java
-    HOTP htop = new HOTP(Base32.encode("secret"));
-    HOTP htop = new HOTP(Base32.encode("secret"), digits = 6);
-    HOTP htop = new HOTP(Base32.encode("secret"), digits = 6, digest = Digest.SHA1);
-
-
-    htop.at(1)
-    htop.verify("533881", counter = 1)
-    htop.provisioningUri("kotpUrl")
-```
-
-```java
-    TOTP htop = new HOTP(Base32.encode("secret"), issuer = "kotp-lib");
-    TOTP htop = new HOTP(Base32.encode("secret"), digits = 6, issuer = "kotp-lib");
-    TOTP htop = new HOTP(Base32.encode("secret"), digits = 6, digest = Digest.SHA1, issuer = "kotp-lib", interval = 60);
-
-
-    htop.at(Calendar.getInstance().time)
-    htop.verify("798676", at = Calendar.getInstance().time)
-    htop.now()
-    htop.verify("61798676")
-    htop.provisioningUri("kotpUrl")
-```
+### [Wiki](https://github.com/eendroroy/kotp/wiki)
 
 ## Contributing
 

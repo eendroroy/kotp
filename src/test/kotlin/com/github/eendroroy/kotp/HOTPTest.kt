@@ -1,6 +1,7 @@
 package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32
+import com.github.eendroroy.kotp.config.HOTPConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.DynamicTest
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.TestFactory
 class HOTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?>? {
-        val hotp = HOTP(secret = Base32.encode("secret"))
+        val hotp = HOTP(HOTPConfig("secret"))
         return listOf(
             Pair(1, "533881"), Pair(2, "720111"), Pair(3, "282621"), Pair(4, "330810"),
             Pair(11, "182025"), Pair(22, "388206"), Pair(33, "526975"), Pair(44, "607928")
@@ -35,9 +36,23 @@ class HOTPTest {
             listOf("kotp", "secret3", 5, 8, "otpauth://hotp/kotp?secret=ONSWG4TFOQZQ&counter=5&digits=8")
         ).map { params ->
             DynamicTest.dynamicTest("testProvisioningUri") {
-                val uri = HOTP(secret = Base32.encode(params[1].toString()), digits = params[3] as Int)
+                val uri = HOTP(HOTPConfig(params[1].toString(), digits = params[3] as Int))
                     .provisioningUri(params[0].toString(), params[2] as Int)
                 assertEquals(params[4], uri)
+            }
+        }
+    }
+
+    @TestFactory
+    fun testBackwardCompatibility(): Collection<DynamicTest?>? {
+        @Suppress("DEPRECATION")
+        val hotpOld = HOTP(secret = Base32.encode("secret"))
+        val hotpNew = HOTP(HOTPConfig("secret"))
+
+        return listOf(1, 2, 3, 4, 1_111_111_111, 1_234_567_890, 2_000_000_000, 2_111_333_222).map {
+            DynamicTest.dynamicTest("testBackwardCompatibility => counter: $it") {
+                assertEquals(hotpNew.at(it), hotpOld.at(it))
+                assertEquals(hotpNew.provisioningUri("kotp"), hotpOld.provisioningUri("kotp"))
             }
         }
     }
