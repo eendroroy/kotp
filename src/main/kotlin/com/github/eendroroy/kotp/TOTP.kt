@@ -8,10 +8,29 @@ import java.util.Calendar
 import java.util.Date
 
 /**
+ * Time-based One-time Password Generator
+ *
+ * @constructor
+ *
+ * @param config OTP properties
+ *
+ * @since 0.1.2
+ *
  * @author indrajit
  */
 class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, config.digest) {
-
+    /**
+     * Time-based One-time Password Generator
+     * Deprecated
+     *
+     * @param secret   secret string encoded by [com.github.eendroroy.kotp.base32.Base32]
+     * @param digits   length of the otp, default: 6
+     * @param digest   algorithm to use, default: [Digest.SHA1]
+     * @param interval interval in seconds to generate new OTP, default: 30
+     * @param issuer   name of the issuer
+     *
+     * @since 0.1.1
+     */
     @Deprecated(
         message = "Since version: 0.1.2",
         replaceWith = ReplaceWith(
@@ -29,14 +48,44 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
     private fun timeCode(date: Date): Int = seconds(date) / config.interval
     private fun timeCode(second: Int): Int = second / config.interval
 
+    /**
+     * Generates OTP at provided [Date]
+     *
+     * @param time time
+     * @return generated OTP
+     *
+     * @since 0.1.1
+     */
     fun at(time: Date): String {
         return generateOtp(timeCode(time))
     }
 
+    /**
+     * Generates OTP at now (current time)
+     *
+     * @return generated OTP
+     *
+     * @since 0.1.1
+     */
     fun now(): String {
         return generateOtp(timeCode(Calendar.getInstance().time))
     }
 
+    /**
+     * Verifies the OTP against the current time OTP and adjacent intervals using [driftAhead] and [driftBehind].
+     *
+     * Excludes OTPs from [after] and earlier. Returns time value of matching OTP code for use in subsequent call.
+     *
+     * @param otp         OTP to verify
+     * @param driftAhead  seconds to look ahead
+     * @param driftBehind seconds to look back
+     * @param after       prevent token reuse, last login timestamp
+     * @param at          time at which to verify OTP. default: current time
+     *
+     * @return the last successful timestamp interval
+     *
+     * @since 0.1.1
+     */
     fun verify(
         otp: String,
         driftAhead: Int = 0,
@@ -52,14 +101,24 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
         return null
     }
 
+    /**
+     * Returns provisioning URI
+     * This can then be encoded in a QR Code and used to provision the Google Authenticator app
+     *
+     * @param name name of the account
+     *
+     * @return provisioning uri
+     *
+     * @since 0.1.1
+     */
     fun provisioningUri(name: String): String {
         val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
         val query = "secret=${encode(config.secret.raw())}" +
-                "&period=${config.interval}" +
-                "&issuer=${encode(config.issuer)}" +
-                "&digits=${config.digits}" +
-                "&algorithm=${encode(config.digest.name)}"
-        return "otpauth://totp/${issuerStr}${encode(name)}?${query}"
+            "&period=${config.interval}" +
+            "&issuer=${encode(config.issuer)}" +
+            "&digits=${config.digits}" +
+            "&algorithm=${encode(config.digest.name)}"
+        return "otpauth://totp/${issuerStr}${encode(name)}?$query"
     }
 
     companion object {

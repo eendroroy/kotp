@@ -5,7 +5,7 @@ import java.util.LinkedList
 /**
  * @author indrajit
  */
-fun Int.toByteArray(padding: Int = 8): ByteArray {
+internal fun Int.toByteArray(padding: Int = 8): ByteArray {
     if (this < 0) throw IllegalArgumentException("#toByteArray requires a positive number")
     var numTemp = this
     return LinkedList<Byte>().apply {

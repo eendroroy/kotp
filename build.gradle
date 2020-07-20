@@ -25,7 +25,7 @@ dependencies {
 
 task javadocJar(type: Jar) {
     archiveClassifier = "javadoc"
-    from javadoc
+    from dokka
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -139,7 +139,7 @@ test {
 }
 
 dokka {
-    outputFormat = "html" // use 'javadoc' to get standard java docs
+    outputFormat = "html"
     outputDirectory = "$buildDir/docs"
 
     configuration {

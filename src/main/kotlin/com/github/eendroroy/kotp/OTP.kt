@@ -9,6 +9,10 @@ import javax.crypto.spec.SecretKeySpec
 import kotlin.math.pow
 
 /**
+ * @param secret [Base32String] secret string encoded by [com.github.eendroroy.kotp.base32.Base32]
+ * @param digits [Int] length of the otp, default: 6
+ * @param digest [Digest] algorithm to use, default: [Digest.SHA1]
+ *
  * @author indrajit
  */
 open class OTP(
@@ -16,6 +20,15 @@ open class OTP(
     private val digits: Int = 6,
     private val digest: Digest = Digest.SHA1
 ) {
+    /**
+     * Generates OTP from input
+     *
+     * @param input either a counter or unix timestamp
+     *
+     * @return generated OTP
+     *
+     * @since 0.1.1
+     */
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     fun generateOtp(input: Int): String {
         val hMac = Mac.getInstance(digest.toString()).let {
