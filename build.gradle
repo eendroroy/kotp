@@ -61,8 +61,8 @@ publishing {
 }
 
 bintray {
-    user = project.findProperty("bintray.user") ?: System.getenv("BINTRAY_USER")
-    key = project.findProperty("bintray.key") ?: System.getenv("BINTRAY_KEY")
+    user = project.findProperty("bintray.user") ?: System.getenv("USERNAME")
+    key = project.findProperty("bintray.key") ?: System.getenv("TOKEN")
     publications = ["maven"]
     pkg {
         repo = project.group
@@ -80,16 +80,18 @@ bintray {
 }
 
 uploadArchives {
+    def ossUser = project.findProperty("oss.user") ?: System.getenv("OSS_USERNAME")
+    def ossKey = project.findProperty("oss.key") ?: System.getenv("OSS_TOKEN")
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
+                authentication(userName: ossUser, password: ossKey)
             }
 
             snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
+                authentication(userName: ossUser, password: ossKey)
             }
 
             pom.project {
