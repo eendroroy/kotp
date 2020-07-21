@@ -12,7 +12,9 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/pulls?q=is%3Apr+is%3Aclosed)
 
-Kotlin(/Java) OTP generation library.
+Kotlin(/Java) OTP generation and validation library.
+
+KOTP is compatible with [Google Authenticator](https://github.com/google/google-authenticator).
 
 ### Installation
 
