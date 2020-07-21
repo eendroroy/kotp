@@ -3,7 +3,7 @@ package com.github.eendroroy.kotp
 import com.github.eendroroy.kotp.base32.Base32
 import com.github.eendroroy.kotp.config.TOTPConfig
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import java.util.Calendar
@@ -31,13 +31,20 @@ class TOTPTest {
             listOf(1_234_567_890, "442583", 120),
             listOf(2_000_000_000, "974517", 120),
             listOf(2_111_333_222, "255203", 120)
-        ).map { item ->
-            DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => at(${item[0]}): ${item[1]} [interval: ${item[2]}]") {
-                val time = Calendar.getInstance().apply { timeInMillis = item[0] as Int * 1_000L }.time
+        ).map { (seconds, otpStr, interval) ->
+            DynamicTest.dynamicTest(
+                "testGeneratedOtpAgainstSample => at(${seconds as Int}): $otpStr [interval: ${interval as Int}]"
+            ) {
+                val time = Calendar.getInstance().apply { timeInMillis = seconds * 1_000L }.time
+                val timeNext = Calendar.getInstance().apply { timeInMillis = (seconds + interval) * 1_000L }.time
                 val otp = totp.at(time)
-                assertEquals(item[1], otp)
-                assertTrue((item[0] as Int) + (item[2] as Int) > totp.verify(otp, at = time) ?: 0)
-                assertTrue((item[0] as Int) - (item[2] as Int) < totp.verify(otp, at = time) ?: 0)
+                val otpNext = totp.at(timeNext)
+
+                assertEquals(otp, otpStr)
+                assertNotEquals(otpNext, otpStr)
+
+                assertEquals(seconds / interval, totp.verify(otp, at = time) as Int / interval)
+                assertNotEquals(seconds / interval, totp.verify(otpNext, at = timeNext) as Int / interval)
             }
         }
     }
@@ -45,7 +52,6 @@ class TOTPTest {
     @TestFactory
     fun testProvisioningUri(): Collection<DynamicTest?>? {
         return listOf(
-//          listOf("0-name", "1-secret", "2-issuer", 3-interval, 4-digits, "5-uri")
             listOf(
                 "kotp",
                 "secret",
