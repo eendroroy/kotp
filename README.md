@@ -16,6 +16,10 @@ Kotlin(/Java) OTP generation and validation library.
 
 KOTP is compatible with [Google Authenticator](https://github.com/google/google-authenticator).
 
+### Demo
+
+[![asciicast](http://asciinema.org/a/352223.svg)](https://asciinema.org/a/352223)
+
 ### Installation
 
 *Maven*
@@ -35,9 +39,13 @@ dependencies {
 }
 ```
 
-### [Change-set](CHANGESET.md)
+### ChangeSet
 
-### [Wiki](https://github.com/eendroroy/kotp/wiki)
+[ChangeSet](CHANGESET.md)
+
+### Usage
+
+See [Wiki](https://github.com/eendroroy/kotp/wiki)
 
 ## Contributing
 
