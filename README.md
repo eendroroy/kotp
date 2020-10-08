@@ -28,14 +28,14 @@ KOTP is compatible with [Google Authenticator](https://github.com/google/google-
 <dependency>
 	<groupId>com.github.eendroroy</groupId>
 	<artifactId>kotp</artifactId>
-	<version>0.1.2</version>
+	<version>0.1.3</version>
 </dependency>
 ```
 
 *Gradle*
 ```groovy
 dependencies {
-    implementation 'com.github.eendroroy:kotp:0.1.2'
+    implementation 'com.github.eendroroy:kotp:0.1.3'
 }
 ```
 
