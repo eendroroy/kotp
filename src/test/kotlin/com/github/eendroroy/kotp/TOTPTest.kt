@@ -43,8 +43,14 @@ class TOTPTest {
                 assertEquals(otp, otpStr)
                 assertNotEquals(otpNext, otpStr)
 
-                assertEquals(seconds / interval, totp.verify(otp, at = time) as Int / interval)
-                assertNotEquals(seconds / interval, totp.verify(otpNext, at = timeNext) as Int / interval)
+                assertEquals(
+                    seconds / interval,
+                    totp.verify(otp, driftAhead = 0, driftBehind = 0, at = time) as Int / interval
+                )
+                assertNotEquals(
+                    seconds / interval,
+                    totp.verify(otpNext, driftAhead = 0, driftBehind = 0, at = timeNext) as Int / interval
+                )
             }
         }
     }

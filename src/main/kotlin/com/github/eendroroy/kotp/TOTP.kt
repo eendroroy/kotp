@@ -45,8 +45,8 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
         issuer: String
     ) : this(TOTPConfig(secret, issuer, digits, interval, digest))
 
-    private fun timeCode(date: Date): Int = seconds(date) / config.interval
-    private fun timeCode(second: Int): Int = second / config.interval
+    private fun timeCode(date: Date): Long = seconds(date) / config.interval
+    private fun timeCode(second: Long): Long = second / config.interval
 
     /**
      * Generates OTP at provided [Date]
@@ -84,21 +84,50 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
      *
      * @return the last successful timestamp interval
      *
-     * @since 0.1.1
+     * @since 0.1.3
      */
     fun verify(
         otp: String,
-        driftAhead: Int = 0,
-        driftBehind: Int = 0,
+        driftAhead: Long = 0L,
+        driftBehind: Long = 0L,
         after: Date? = null,
         at: Date = Calendar.getInstance().time
-    ): Int? {
+    ): Long? {
         val now = seconds(at)
         var start = timeCode(now - driftBehind)
         after?.let { seconds(it).run { if (start < this) start = this } }
         val end = timeCode(now + driftAhead)
         (start..end).forEach { if (otp == generateOtp(it)) return it * config.interval }
         return null
+    }
+
+    /**
+     * Verifies the OTP against the current time OTP and adjacent intervals using [driftAhead] and [driftBehind].
+     *
+     * Excludes OTPs from [after] and earlier. Returns time value of matching OTP code for use in subsequent call.
+     *
+     * @param otp         OTP to verify
+     * @param driftAhead  seconds to look ahead
+     * @param driftBehind seconds to look back
+     * @param after       prevent token reuse, last login timestamp
+     * @param at          time at which to verify OTP. default: current time
+     *
+     * @return the last successful timestamp interval
+     *
+     * @since 0.1.1
+     */
+    @Deprecated(
+        message = "Deprecated since version: 0.1.3",
+        replaceWith = ReplaceWith("verify(otp, driftAhead.toLong(), driftBehind.toLong(), after, at)")
+    )
+    fun verify(
+        otp: String,
+        driftAhead: Int,
+        driftBehind: Int,
+        after: Date? = null,
+        at: Date = Calendar.getInstance().time
+    ): Int? {
+        return verify(otp, driftAhead.toLong(), driftBehind.toLong(), after, at)?.toInt()
     }
 
     /**
@@ -114,16 +143,16 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
     fun provisioningUri(name: String): String {
         val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
         val query = "secret=${encode(config.secret.raw())}" +
-            "&period=${config.interval}" +
-            "&issuer=${encode(config.issuer)}" +
-            "&digits=${config.digits}" +
-            "&algorithm=${encode(config.digest.name)}"
+                "&period=${config.interval}" +
+                "&issuer=${encode(config.issuer)}" +
+                "&digits=${config.digits}" +
+                "&algorithm=${encode(config.digest.name)}"
         return "otpauth://totp/${issuerStr}${encode(name)}?$query"
     }
 
     companion object {
         private val seconds = { date: Date ->
-            (Calendar.getInstance().apply { this.time = date }.timeInMillis / 1_000).toInt()
+            (Calendar.getInstance().apply { this.time = date }.timeInMillis / 1_000)
         }
 
         private val encode = { value: String ->

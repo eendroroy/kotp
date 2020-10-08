@@ -22,6 +22,7 @@ open class OTP(
 ) {
     /**
      * Generates OTP from input
+     * Deprecated
      *
      * @param input either a counter or unix timestamp
      *
@@ -29,8 +30,26 @@ open class OTP(
      *
      * @since 0.1.1
      */
+    @Deprecated(
+        message = "Deprecated since version: 0.1.3",
+        replaceWith = ReplaceWith("generateOtp(input.toLong())")
+    )
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     fun generateOtp(input: Int): String {
+        return generateOtp(input.toLong())
+    }
+
+    /**
+     * Generates OTP from input
+     *
+     * @param input either a counter or unix timestamp
+     *
+     * @return generated OTP
+     *
+     * @since 0.1.3
+     */
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
+    fun generateOtp(input: Long): String {
         val hMac = Mac.getInstance(digest.toString()).let {
             it.init(SecretKeySpec(secret.decode(), digest.toString()))
             return@let it.doFinal(input.toByteArray())
