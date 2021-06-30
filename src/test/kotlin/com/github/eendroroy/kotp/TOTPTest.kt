@@ -16,24 +16,24 @@ class TOTPTest {
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?>? {
         val totp = TOTP(TOTPConfig(Base32.encode("secret"), "kotp_lib"))
         return listOf(
-            listOf(0, "814628", 30),
-            listOf(1_111_111_111, "001123", 30),
-            listOf(1_234_567_890, "442583", 30),
-            listOf(2_000_000_000, "974517", 30),
-            listOf(2_111_333_222, "255203", 30),
-            listOf(0, "814628", 60),
-            listOf(1_111_111_111, "001123", 60),
-            listOf(1_234_567_890, "442583", 60),
-            listOf(2_000_000_000, "974517", 60),
-            listOf(2_111_333_222, "255203", 60),
-            listOf(0, "814628", 120),
-            listOf(1_111_111_111, "001123", 120),
-            listOf(1_234_567_890, "442583", 120),
-            listOf(2_000_000_000, "974517", 120),
-            listOf(2_111_333_222, "255203", 120)
+            listOf(0L, "814628", 30),
+            listOf(1_111_111_111L, "001123", 30),
+            listOf(1_234_567_890L, "442583", 30),
+            listOf(2_000_000_000L, "974517", 30),
+            listOf(2_111_333_222L, "255203", 30),
+            listOf(0L, "814628", 60),
+            listOf(1_111_111_111L, "001123", 60),
+            listOf(1_234_567_890L, "442583", 60),
+            listOf(2_000_000_000L, "974517", 60),
+            listOf(2_111_333_222L, "255203", 60),
+            listOf(0L, "814628", 120),
+            listOf(1_111_111_111L, "001123", 120),
+            listOf(1_234_567_890L, "442583", 120),
+            listOf(2_000_000_000L, "974517", 120),
+            listOf(2_111_333_222L, "255203", 120)
         ).map { (seconds, otpStr, interval) ->
             DynamicTest.dynamicTest(
-                "testGeneratedOtpAgainstSample => at(${seconds as Int}): $otpStr [interval: ${interval as Int}]"
+                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [interval: ${interval as Int}]"
             ) {
                 val time = Calendar.getInstance().apply { timeInMillis = seconds * 1_000L }.time
                 val timeNext = Calendar.getInstance().apply { timeInMillis = (seconds + interval) * 1_000L }.time
@@ -45,11 +45,11 @@ class TOTPTest {
 
                 assertEquals(
                     seconds / interval,
-                    totp.verify(otp, driftAhead = 0, driftBehind = 0, at = time) as Int / interval
+                    totp.verify(otp, at = time) as Long / interval
                 )
                 assertNotEquals(
                     seconds / interval,
-                    totp.verify(otpNext, driftAhead = 0, driftBehind = 0, at = timeNext) as Int / interval
+                    totp.verify(otpNext, at = timeNext) as Long / interval
                 )
             }
         }
