@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestFactory
  */
 class OTPTest {
     @TestFactory
-    fun testOtpGenerationUsingDigest(): Collection<DynamicTest?>? {
+    fun testOtpGenerationUsingDigest(): Collection<DynamicTest?> {
         return Digest.values().map { digest ->
             DynamicTest.dynamicTest("testOtpGenerationUsing => ${digest.name}") {
                 val otp = OTP(secret = Base32.encode("secret"), digits = 6, digest = digest).generateOtp(123L)
@@ -20,7 +20,7 @@ class OTPTest {
     }
 
     @TestFactory
-    fun testGeneratedOtpLengthIsCorrect(): Collection<DynamicTest?>? {
+    fun testGeneratedOtpLengthIsCorrect(): Collection<DynamicTest?> {
         return listOf(1, 2, 3, 4, 6, 8, 10, 12, 24).map { len ->
             DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $len") {
                 val otp1 = OTP(secret = Base32.encode("secret"), digits = len).generateOtp(123L)
@@ -30,7 +30,7 @@ class OTPTest {
     }
 
     @TestFactory
-    fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?>? {
+    fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
         return listOf(
             Pair(1L, "533881"), Pair(2L, "720111"), Pair(3L, "282621"), Pair(4L, "330810"),
             Pair(11L, "182025"), Pair(22L, "388206"), Pair(33L, "526975"), Pair(44L, "607928"),

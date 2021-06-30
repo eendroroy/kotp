@@ -31,9 +31,9 @@ class HOTPTest {
     @TestFactory
     fun testProvisioningUri(): Collection<DynamicTest?> {
         return listOf(
-            listOf("kotp", "secret1", 1L, 6, "otpauth://hotp/kotp?secret=ONSWG4TFOQYQ&counter=1&digits=6"),
-            listOf("kotp", "secret2", 5L, 6, "otpauth://hotp/kotp?secret=ONSWG4TFOQZA&counter=5&digits=6"),
-            listOf("kotp", "secret3", 5L, 8, "otpauth://hotp/kotp?secret=ONSWG4TFOQZQ&counter=5&digits=8")
+            listOf<Any>("kotp", "secret1", 1L, 6, "otpauth://hotp/kotp?secret=ONSWG4TFOQYQ&counter=1&digits=6"),
+            listOf<Any>("kotp", "secret2", 5L, 6, "otpauth://hotp/kotp?secret=ONSWG4TFOQZA&counter=5&digits=6"),
+            listOf<Any>("kotp", "secret3", 5L, 8, "otpauth://hotp/kotp?secret=ONSWG4TFOQZQ&counter=5&digits=8")
         ).map { params ->
             DynamicTest.dynamicTest("testProvisioningUri") {
                 val uri = HOTP(HOTPConfig(params[1].toString(), digits = params[3] as Int))

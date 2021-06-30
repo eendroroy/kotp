@@ -13,24 +13,24 @@ import java.util.Calendar
  */
 class TOTPTest {
     @TestFactory
-    fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?>? {
+    fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
         val totp = TOTP(TOTPConfig(Base32.encode("secret"), "kotp_lib"))
         return listOf(
-            listOf(0L, "814628", 30),
-            listOf(1_111_111_111L, "001123", 30),
-            listOf(1_234_567_890L, "442583", 30),
-            listOf(2_000_000_000L, "974517", 30),
-            listOf(2_111_333_222L, "255203", 30),
-            listOf(0L, "814628", 60),
-            listOf(1_111_111_111L, "001123", 60),
-            listOf(1_234_567_890L, "442583", 60),
-            listOf(2_000_000_000L, "974517", 60),
-            listOf(2_111_333_222L, "255203", 60),
-            listOf(0L, "814628", 120),
-            listOf(1_111_111_111L, "001123", 120),
-            listOf(1_234_567_890L, "442583", 120),
-            listOf(2_000_000_000L, "974517", 120),
-            listOf(2_111_333_222L, "255203", 120)
+            listOf<Any>(0L, "814628", 30),
+            listOf<Any>(1_111_111_111L, "001123", 30),
+            listOf<Any>(1_234_567_890L, "442583", 30),
+            listOf<Any>(2_000_000_000L, "974517", 30),
+            listOf<Any>(2_111_333_222L, "255203", 30),
+            listOf<Any>(0L, "814628", 60),
+            listOf<Any>(1_111_111_111L, "001123", 60),
+            listOf<Any>(1_234_567_890L, "442583", 60),
+            listOf<Any>(2_000_000_000L, "974517", 60),
+            listOf<Any>(2_111_333_222L, "255203", 60),
+            listOf<Any>(0L, "814628", 120),
+            listOf<Any>(1_111_111_111L, "001123", 120),
+            listOf<Any>(1_234_567_890L, "442583", 120),
+            listOf<Any>(2_000_000_000L, "974517", 120),
+            listOf<Any>(2_111_333_222L, "255203", 120)
         ).map { (seconds, otpStr, interval) ->
             DynamicTest.dynamicTest(
                 "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [interval: ${interval as Int}]"
@@ -56,9 +56,9 @@ class TOTPTest {
     }
 
     @TestFactory
-    fun testProvisioningUri(): Collection<DynamicTest?>? {
+    fun testProvisioningUri(): Collection<DynamicTest?> {
         return listOf(
-            listOf(
+            listOf<Any>(
                 "kotp",
                 "secret",
                 "kotp_lib",
@@ -66,7 +66,7 @@ class TOTPTest {
                 6,
                 "otpauth://totp/kotp_lib:kotp?secret=ONSWG4TFOQ&period=30&issuer=kotp_lib&digits=6&algorithm=SHA1"
             ),
-            listOf(
+            listOf<Any>(
                 "kotp",
                 "secret",
                 "kotp_lib",
@@ -74,7 +74,7 @@ class TOTPTest {
                 6,
                 "otpauth://totp/kotp_lib:kotp?secret=ONSWG4TFOQ&period=60&issuer=kotp_lib&digits=6&algorithm=SHA1"
             ),
-            listOf(
+            listOf<Any>(
                 "kotp",
                 "secret",
                 "kotp_lib",
@@ -98,7 +98,7 @@ class TOTPTest {
     }
 
     @TestFactory
-    fun testBackwardCompatibility(): Collection<DynamicTest?>? {
+    fun testBackwardCompatibility(): Collection<DynamicTest?> {
         @Suppress("DEPRECATION")
         val totpOld = TOTP(Base32.encode("secret"), issuer = "kotp-lib")
         val totpNew = TOTP(TOTPConfig(Base32.encode("secret"), "kotp-lib"))
