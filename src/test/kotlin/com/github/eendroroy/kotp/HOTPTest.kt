@@ -3,7 +3,6 @@ package com.github.eendroroy.kotp
 import com.github.eendroroy.kotp.base32.Base32
 import com.github.eendroroy.kotp.config.HOTPConfig
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
@@ -13,17 +12,24 @@ import org.junit.jupiter.api.TestFactory
 class HOTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
-        val hotp = HOTP(HOTPConfig("secret"))
+        val hotp = HOTP(HOTPConfig("12345678901234567890"))
         return listOf(
-            Pair(1L, "533881"), Pair(2L, "720111"), Pair(3L, "282621"), Pair(4L, "330810"),
-            Pair(11L, "182025"), Pair(22L, "388206"), Pair(33L, "526975"), Pair(44L, "607928")
+            Pair(0L, "755224"),
+            Pair(1L, "287082"),
+            Pair(2L, "359152"),
+            Pair(3L, "969429"),
+            Pair(4L, "338314"),
+            Pair(5L, "254676"),
+            Pair(6L, "287922"),
+            Pair(7L, "162583"),
+            Pair(8L, "399871"),
+            Pair(9L, "520489")
         ).map { pair ->
             DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => at(${pair.first}): ${pair.second}") {
                 val otp = hotp.at(pair.first)
                 assertEquals(pair.second, otp)
                 assertEquals(pair.first, hotp.verify(pair.second, pair.first))
                 assertEquals(pair.first, hotp.verify(pair.second, 0, retries = pair.first))
-                assertNotEquals(pair.first, hotp.verify(pair.second, 0L))
             }
         }
     }
