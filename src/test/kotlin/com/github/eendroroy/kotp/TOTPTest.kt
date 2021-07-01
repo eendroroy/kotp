@@ -14,27 +14,31 @@ import java.util.Calendar
 class TOTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
-        val totp = TOTP(TOTPConfig(Base32.encode("secret"), "kotp_lib"))
         return listOf(
-            listOf<Any>(0L, "814628", 30),
-            listOf<Any>(1_111_111_111L, "001123", 30),
-            listOf<Any>(1_234_567_890L, "442583", 30),
-            listOf<Any>(2_000_000_000L, "974517", 30),
-            listOf<Any>(2_111_333_222L, "255203", 30),
-            listOf<Any>(0L, "814628", 60),
-            listOf<Any>(1_111_111_111L, "001123", 60),
-            listOf<Any>(1_234_567_890L, "442583", 60),
-            listOf<Any>(2_000_000_000L, "974517", 60),
-            listOf<Any>(2_111_333_222L, "255203", 60),
-            listOf<Any>(0L, "814628", 120),
-            listOf<Any>(1_111_111_111L, "001123", 120),
-            listOf<Any>(1_234_567_890L, "442583", 120),
-            listOf<Any>(2_000_000_000L, "974517", 120),
-            listOf<Any>(2_111_333_222L, "255203", 120)
-        ).map { (seconds, otpStr, interval) ->
+            listOf<Any>(59L, "94287082", Digest.SHA1, "12345678901234567890"),
+            listOf<Any>(59L, "46119246", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(59L, "90693936", Digest.SHA512, "1234567890123456789012345678901234567890123456789012345678901234"),
+            listOf<Any>(1111111109L, "07081804", Digest.SHA1, "12345678901234567890"),
+            listOf<Any>(1111111109L, "68084774", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(1111111109L, "25091201", Digest.SHA512, "1234567890123456789012345678901234567890123456789012345678901234"),
+            listOf<Any>(1111111111L, "14050471", Digest.SHA1, "12345678901234567890"),
+            listOf<Any>(1111111111L, "67062674", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(1111111111L, "99943326", Digest.SHA512, "1234567890123456789012345678901234567890123456789012345678901234"),
+            listOf<Any>(1234567890L, "89005924", Digest.SHA1, "12345678901234567890"),
+            listOf<Any>(1234567890L, "91819424", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(1234567890L, "93441116", Digest.SHA512, "1234567890123456789012345678901234567890123456789012345678901234"),
+            listOf<Any>(2000000000L, "69279037", Digest.SHA1, "12345678901234567890"),
+            listOf<Any>(2000000000L, "90698825", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(2000000000L, "38618901", Digest.SHA512, "1234567890123456789012345678901234567890123456789012345678901234"),
+            listOf<Any>(20000000000L, "65353130", Digest.SHA1, "12345678901234567890"),
+            listOf<Any>(20000000000L, "77737706", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(20000000000L, "47863826", Digest.SHA512, "1234567890123456789012345678901234567890123456789012345678901234"),
+        ).map { (seconds, otpStr, digest, seed) ->
             DynamicTest.dynamicTest(
-                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [interval: ${interval as Int}]"
+                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [Digest: ${digest as Digest}]"
             ) {
+                val interval = 30
+                val totp = TOTP(TOTPConfig(seed as String, "kotp_lib", 8, interval, digest))
                 val time = Calendar.getInstance().apply { timeInMillis = seconds * 1_000L }.time
                 val timeNext = Calendar.getInstance().apply { timeInMillis = (seconds + interval) * 1_000L }.time
                 val otp = totp.at(time)
