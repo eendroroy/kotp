@@ -46,25 +46,12 @@ tasks.dokkaHtml.configure {
     outputDirectory.set(file("$buildDir/docs"))
 }
 
-task javadocJar(type: Jar) {
-    archiveClassifier.set("javadoc")
-    from dokkaHtml
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier.set("sources")
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-
-signing {
-    sign configurations.archives
-}
 
 tasks.withType(Sign) {
     onlyIf { isReleaseVersion }
@@ -87,7 +74,8 @@ publishing {
     }
 
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
+            artifactId = "kotp"
             from components.java
 
             pom {
@@ -118,4 +106,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
