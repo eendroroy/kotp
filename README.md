@@ -1,7 +1,6 @@
 # kotp
 
 ![Java CI with Gradle](https://github.com/eendroroy/kotp/workflows/Tests/badge.svg)
-[![Download](https://api.bintray.com/packages/eendroroy/com.github.eendroroy/kotp/images/download.svg)](https://bintray.com/eendroroy/com.github.eendroroy/kotp/_latestVersion)
 [![GitHub tag](https://img.shields.io/github/tag/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/tags)
 
 [![Contributors](https://img.shields.io/github/contributors/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/graphs/contributors)
