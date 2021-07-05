@@ -1,3 +1,7 @@
+# 0.1.4
+- RFC4226 and RFC6238 compliance
+- Added support for `SHA256` and `SHA512`
+
 # 0.1.3
 - Use Long value as otp input/counter
 
