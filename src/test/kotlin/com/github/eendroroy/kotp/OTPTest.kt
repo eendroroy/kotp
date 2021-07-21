@@ -25,6 +25,10 @@ class OTPTest {
             DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $len") {
                 val otp1 = OTP(secret = Base32.encode("secret"), digits = len).generateOtp(123L)
                 assertEquals(len, otp1.length)
+                val otp2 = OTP(secret = Base32.encode("secret"), digits = len, base = 16).generateOtp(123L)
+                assertEquals(len, otp2.length)
+                val otp3 = OTP(secret = Base32.encode("secret"), digits = len, base = 36).generateOtp(123L)
+                assertEquals(len, otp3.length)
             }
         }
     }
@@ -32,14 +36,20 @@ class OTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
         return listOf(
-            Pair(1L, "533881"), Pair(2L, "720111"), Pair(3L, "282621"), Pair(4L, "330810"),
-            Pair(11L, "182025"), Pair(22L, "388206"), Pair(33L, "526975"), Pair(44L, "607928"),
-            Pair(123L, "067135"), Pair(132L, "841825"), Pair(213L, "068586"), Pair(231L, "101814"),
-            Pair(312L, "203944"), Pair(321L, "827117")
-        ).map { pair ->
-            DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => generateOtp(${pair.first}): ${pair.second}") {
-                val otp = OTP(secret = Base32.encode("secret")).generateOtp(pair.first)
-                assertEquals(pair.second, otp)
+            listOf<Any>(123L, "99067135", 10),
+            listOf<Any>(9999L, "13747295", 10),
+            listOf<Any>(123456789L, "98052198", 10),
+            listOf<Any>(123L, "0BDD85FF", 16),
+            listOf<Any>(9999L, "3C6C8E5F", 16),
+            listOf<Any>(123456789L, "6B2C1966", 16),
+            listOf<Any>(123L, "003AIP6N", 36),
+            listOf<Any>(9999L, "00GRK4F3", 36),
+            listOf<Any>(123456789L, "00TQIHYE", 36),
+        ).map { item ->
+            DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => generateOtp(${item[0] as Long}): ${item[1] as String}") {
+                val otp = OTP(secret = Base32.encode("secret"), digits = 8, base = item[2] as Int)
+                    .generateOtp(item[0] as Long)
+                assertEquals(item[1] as String, otp)
             }
         }
     }
