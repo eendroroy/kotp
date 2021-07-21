@@ -16,7 +16,7 @@ import java.nio.charset.Charset
  *
  * @author indrajit
  */
-class HOTP constructor(private val config: HOTPConfig) : OTP(config.secret, config.digits, config.digest) {
+class HOTP constructor(private val config: HOTPConfig) : OTP(config.secret, config.digits, config.digest, config.base) {
 
     /**
      * HMAC-based One-time Password Generator
@@ -112,8 +112,8 @@ class HOTP constructor(private val config: HOTPConfig) : OTP(config.secret, conf
      */
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
         val query = "secret=${encode(config.secret.raw())}" +
-                "&counter=${encode(initialCount.toString())}" +
-                "&digits=${encode(config.digits.toString())}"
+            "&counter=${encode(initialCount.toString())}" +
+            "&digits=${encode(config.digits.toString())}"
         return "otpauth://hotp/${encode(name)}?$query"
     }
 

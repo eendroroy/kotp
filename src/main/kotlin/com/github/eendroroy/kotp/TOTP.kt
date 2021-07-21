@@ -18,7 +18,7 @@ import java.util.Date
  *
  * @author indrajit
  */
-class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, config.digest) {
+class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, config.digest, config.base) {
     /**
      * Time-based One-time Password Generator
      * Deprecated
