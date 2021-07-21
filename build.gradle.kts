@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
     signing
 
-    kotlin("jvm") version "1.5.20"
+    kotlin("jvm") version "1.5.21"
     id("com.adarshr.test-logger") version "3.0.0"
     id("org.jetbrains.dokka") version "1.4.32"
 }
