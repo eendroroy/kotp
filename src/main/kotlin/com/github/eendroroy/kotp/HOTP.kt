@@ -112,11 +112,12 @@ class HOTP constructor(private val config: HOTPConfig) : OTP(config.secret, conf
      * @since 0.1.3
      */
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
-        if (config.base != 10) throw UnsupportedBaseValue()
-
-        val query = "secret=${encode(config.secret.raw())}" +
-            "&counter=${encode(initialCount.toString())}" +
-            "&digits=${encode(config.digits.toString())}"
+        val query = listOf(
+            "secret=${encode(config.secret.raw())}",
+            "&counter=${encode(initialCount.toString())}",
+            "&digits=${encode(config.digits.toString())}",
+            "&base=${encode(config.base.toString())}",
+        ).joinToString("")
         return "otpauth://hotp/${encode(name)}?$query"
     }
 

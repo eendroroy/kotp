@@ -142,15 +142,14 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
      * @since 0.1.1
      */
     fun provisioningUri(name: String): String {
-        if (config.base != 10) throw UnsupportedBaseValue()
-
         val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
         val query = listOf(
             "secret=${encode(config.secret.raw())}",
             "&period=${config.interval}",
             "&issuer=${encode(config.issuer)}",
             "&digits=${config.digits}",
-            "&algorithm=${encode(config.digest.name)}"
+            "&algorithm=${encode(config.digest.name)}",
+            "&base=${encode(config.base.toString())}",
         ).joinToString("")
         return "otpauth://totp/${issuerStr}${encode(name)}?$query"
     }

@@ -5,4 +5,12 @@ import java.lang.RuntimeException
 /**
  * @author indrajit
  */
-class InvalidBaseValue: RuntimeException("base was not in valid range 10..36")
+class InvalidBaseValue : RuntimeException("base was not in valid range $BASE_VALUE_RANGE") {
+    companion object {
+        val BASE_VALUE_RANGE = 10..36
+
+        fun passOrThrow(value: Int) {
+            if (!BASE_VALUE_RANGE.contains(value)) throw InvalidBaseValue()
+        }
+    }
+}
