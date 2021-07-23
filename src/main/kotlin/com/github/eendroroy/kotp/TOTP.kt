@@ -3,6 +3,9 @@ package com.github.eendroroy.kotp
 import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.TOTPConfig
 import com.github.eendroroy.kotp.exception.UnsupportedBaseForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.util.Calendar
@@ -151,6 +154,32 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
             "&algorithm=${encode(config.digest.name)}",
             "&base=${encode(config.base.toString())}",
         ).joinToString("")
+        return "otpauth://totp/${issuerStr}${encode(name)}?$query"
+    }
+
+    /**
+     * Returns Authenticator App supported provisioning URI
+     * This can then be encoded in a QR Code and used to provision the Google Authenticator app
+     *
+     * @param name name of the account
+     *
+     * @return provisioning uri
+     *
+     * @since 0.1.5
+     */
+    fun authenticatorProvisioningUri(name: String): String {
+        UnsupportedIntervalForProvisioningUri.passOrThrow(config.interval)
+        UnsupportedDigitsForProvisioningUri.passOrThrow(config.digits)
+        UnsupportedDigestForProvisioningUri.passOrThrow(config.digest)
+        UnsupportedBaseForProvisioningUri.passOrThrow(config.base)
+
+        val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
+
+        val query = listOf(
+            "secret=${encode(config.secret.raw())}",
+            "&issuer=${encode(config.issuer)}"
+        ).joinToString("")
+
         return "otpauth://totp/${issuerStr}${encode(name)}?$query"
     }
 
