@@ -2,6 +2,10 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.HOTPConfig
+import com.github.eendroroy.kotp.exception.UnsupportedBaseForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
@@ -108,15 +112,18 @@ class HOTP constructor(private val config: HOTPConfig) : OTP(config.secret, conf
      *
      * @return provisioning uri
      *
-     * @since 0.1.3
+     * @since 0.1.5
      */
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
+        UnsupportedDigitsForProvisioningUri.passOrThrow(config.digits)
+        UnsupportedDigestForProvisioningUri.passOrThrow(config.digest)
+        UnsupportedBaseForProvisioningUri.passOrThrow(config.base)
+
         val query = listOf(
             "secret=${encode(config.secret.raw())}",
             "&counter=${encode(initialCount.toString())}",
-            "&digits=${encode(config.digits.toString())}",
-            "&base=${encode(config.base.toString())}",
         ).joinToString("")
+
         return "otpauth://hotp/${encode(name)}?$query"
     }
 
