@@ -1,7 +1,5 @@
 package com.github.eendroroy.kotp.exception
 
-import java.lang.RuntimeException
-
 /**
  * @author indrajit
  */

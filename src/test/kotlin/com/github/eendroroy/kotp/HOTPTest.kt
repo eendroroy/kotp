@@ -2,8 +2,13 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32
 import com.github.eendroroy.kotp.config.HOTPConfig
+import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 /**
@@ -34,19 +39,43 @@ class HOTPTest {
         }
     }
 
-    @TestFactory
-    fun testProvisioningUri(): Collection<DynamicTest?> {
-        return listOf(
-            listOf<Any>("kotp", "secret1", 1L, 6, "otpauth://hotp/kotp?secret=ONSWG4TFOQYQ&counter=1&digits=6"),
-            listOf<Any>("kotp", "secret2", 5L, 6, "otpauth://hotp/kotp?secret=ONSWG4TFOQZA&counter=5&digits=6"),
-            listOf<Any>("kotp", "secret3", 5L, 8, "otpauth://hotp/kotp?secret=ONSWG4TFOQZQ&counter=5&digits=8")
-        ).map { params ->
-            DynamicTest.dynamicTest("testProvisioningUri") {
-                val uri = HOTP(HOTPConfig(params[1].toString(), digits = params[3] as Int))
-                    .provisioningUri(params[0].toString(), params[2] as Long)
-                assertEquals(params[4], uri)
-            }
+    @Test
+    fun testPassProvisioningUri() {
+        val uri = HOTP(HOTPConfig("secret", digits = 6, digest = Digest.SHA1, radix = 10)).provisioningUri("kotp")
+        assertEquals("otpauth://hotp/kotp?secret=ONSWG4TFOQ&counter=0", uri)
+    }
+
+    @Test
+    fun testFailWithUnsupportedDigitsForProvisioningUri() {
+        val hotp = HOTP(HOTPConfig("secret", digits = 8))
+
+        val exception = Assertions.assertThrows(UnsupportedDigitsForProvisioningUri::class.java) {
+            hotp.provisioningUri("kotp")
         }
+
+        Assertions.assertTrue(exception.message == "supports only {${UnsupportedDigitsForProvisioningUri.PROV_DIGIT_VALUE}} digits")
+    }
+
+    @Test
+    fun testFailWithUnsupportedDigestForProvisioningUri() {
+        val hotp = HOTP(HOTPConfig("secret", digest = Digest.SHA512))
+
+        val exception = Assertions.assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
+            hotp.provisioningUri("kotp")
+        }
+
+        Assertions.assertTrue(exception.message == "supports only {${UnsupportedDigestForProvisioningUri.PROV_DIGEST_VALUE}}")
+    }
+
+    @Test
+    fun testFailWithUnsupportedRadixForProvisioningUri() {
+        val hotp = HOTP(HOTPConfig("secret", radix = 16))
+
+        val exception = Assertions.assertThrows(UnsupportedRadixForProvisioningUri::class.java) {
+            hotp.provisioningUri("kotp")
+        }
+
+        Assertions.assertTrue(exception.message == "supports only {${UnsupportedRadixForProvisioningUri.PROV_RADIX_VALUE}} radix")
     }
 
     @TestFactory
