@@ -2,6 +2,7 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.HOTPConfig
+import com.github.eendroroy.kotp.exception.UnsupportedBaseValue
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
@@ -111,6 +112,8 @@ class HOTP constructor(private val config: HOTPConfig) : OTP(config.secret, conf
      * @since 0.1.3
      */
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
+        if (config.base != 10) throw UnsupportedBaseValue()
+
         val query = "secret=${encode(config.secret.raw())}" +
             "&counter=${encode(initialCount.toString())}" +
             "&digits=${encode(config.digits.toString())}"

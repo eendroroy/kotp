@@ -2,6 +2,7 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.TOTPConfig
+import com.github.eendroroy.kotp.exception.UnsupportedBaseValue
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.util.Calendar
@@ -141,12 +142,16 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
      * @since 0.1.1
      */
     fun provisioningUri(name: String): String {
+        if (config.base != 10) throw UnsupportedBaseValue()
+
         val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
-        val query = "secret=${encode(config.secret.raw())}" +
-                "&period=${config.interval}" +
-                "&issuer=${encode(config.issuer)}" +
-                "&digits=${config.digits}" +
-                "&algorithm=${encode(config.digest.name)}"
+        val query = listOf(
+            "secret=${encode(config.secret.raw())}",
+            "&period=${config.interval}",
+            "&issuer=${encode(config.issuer)}",
+            "&digits=${config.digits}",
+            "&algorithm=${encode(config.digest.name)}"
+        ).joinToString("")
         return "otpauth://totp/${issuerStr}${encode(name)}?$query"
     }
 
