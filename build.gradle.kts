@@ -22,7 +22,7 @@ buildscript {
 
 
 group = "com.github.eendroroy"
-version = "0.1.4"
+version = "1.0.0"
 val isReleaseVersion = !"$version".endsWith("SNAPSHOT")
 
 dependencies {
@@ -105,7 +105,7 @@ publishing {
         maven {
             val releaseRepo = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
             val snapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = uri(if(isReleaseVersion) releaseRepo else snapshotRepo)
+            url = uri(if (isReleaseVersion) releaseRepo else snapshotRepo)
             credentials {
                 username = project.findProperty("oss.user")?.toString() ?: System.getenv("OSS_USERNAME")
                 password = project.findProperty("oss.key")?.toString() ?: System.getenv("OSS_TOKEN")

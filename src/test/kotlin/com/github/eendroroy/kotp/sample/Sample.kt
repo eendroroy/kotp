@@ -36,8 +36,8 @@ fun main() {
     totpDemo(secret, 8, 30, Digest.SHA512, 36)
 }
 
-fun hotpDemo(secret: String, digits: Int, digest: Digest, base: Int) {
-    val config = HOTPConfig(secret = secret, digits = digits, digest = digest, base = base)
+fun hotpDemo(secret: String, digits: Int, digest: Digest, radix: Int) {
+    val config = HOTPConfig(secret = secret, digits = digits, digest = digest, radix = radix)
     val hotp = HOTP(config)
     val counter = System.currentTimeMillis() / 1_000
 
@@ -51,18 +51,18 @@ fun hotpDemo(secret: String, digits: Int, digest: Digest, base: Int) {
     } catch (ex: RuntimeException) {
         println(ex.localizedMessage)
     }
-    println("$digits <> $digest <> $base")
+    println("$digits <> $digest <> $radix")
     println("$counter  ==>  $otp  <>  ${counter == verify}")
 }
 
-fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, base: Int) {
+fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, radix: Int) {
     val config = TOTPConfig(
         secret = secret,
         issuer = "kotp_lib",
         digits = digits,
         interval = interval,
         digest = digest,
-        base = base
+        radix = radix
     )
     val totp = TOTP(config)
     val date = Calendar.getInstance().time
@@ -78,7 +78,7 @@ fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, base: I
     } catch (ex: RuntimeException) {
         println(ex.localizedMessage)
     }
-    println("$digits <> $digest <> $base")
+    println("$digits <> $digest <> $radix")
     println("$date  ==>  $otp  <>  ${seconds - (seconds % interval) == verify}")
     println("NOW                           ==>  ${totp.now()}")
 }

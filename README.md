@@ -13,7 +13,8 @@
 
 OTP generation and validation library.
 
-* Implements [RFC4226](https://datatracker.ietf.org/doc/html/rfc4226) and [RFC6238](https://datatracker.ietf.org/doc/html/rfc6238)
+* Implements [RFC4226](https://datatracker.ietf.org/doc/html/rfc4226)
+  and [RFC6238](https://datatracker.ietf.org/doc/html/rfc6238)
 * Compatible with [Google Authenticator](https://github.com/google/google-authenticator).
 
 ### Demo
@@ -25,17 +26,19 @@ OTP generation and validation library.
 *Maven*
 
 ```xml
+
 <dependency>
-	<groupId>com.github.eendroroy</groupId>
-	<artifactId>kotp</artifactId>
-	<version>0.1.4</version>
+    <groupId>com.github.eendroroy</groupId>
+    <artifactId>kotp</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 
 *Gradle*
+
 ```groovy
 dependencies {
-    implementation 'com.github.eendroroy:kotp:0.1.4'
+    implementation 'com.github.eendroroy:kotp:1.0.0'
 }
 ```
 
@@ -49,15 +52,15 @@ See [Wiki](https://github.com/eendroroy/kotp/wiki)
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [kotp](https://github.com/eendroroy/kotp) repository.
-This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the
+Bug reports and pull requests are welcome on GitHub at [kotp](https://github.com/eendroroy/kotp) repository. This
+project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-  1. Fork it ( https://github.com/eendroroy/kotp/fork )
-  1. Create your feature branch (`git checkout -b my-new-feature`)
-  1. Commit your changes (`git commit -am 'Add some feature'`)
-  1. Push to the branch (`git push origin my-new-feature`)
-  1. Create a new Pull Request
+1. Fork it ( https://github.com/eendroroy/kotp/fork )
+1. Create your feature branch (`git checkout -b my-new-feature`)
+1. Commit your changes (`git commit -am 'Add some feature'`)
+1. Push to the branch (`git push origin my-new-feature`)
+1. Create a new Pull Request
 
 ## Author
 

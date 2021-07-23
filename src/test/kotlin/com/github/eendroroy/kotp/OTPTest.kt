@@ -25,9 +25,9 @@ class OTPTest {
             DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $len") {
                 val otp1 = OTP(secret = Base32.encode("secret"), digits = len).generateOtp(123L)
                 assertEquals(len, otp1.length)
-                val otp2 = OTP(secret = Base32.encode("secret"), digits = len, base = 16).generateOtp(123L)
+                val otp2 = OTP(secret = Base32.encode("secret"), digits = len, radix = 16).generateOtp(123L)
                 assertEquals(len, otp2.length)
-                val otp3 = OTP(secret = Base32.encode("secret"), digits = len, base = 36).generateOtp(123L)
+                val otp3 = OTP(secret = Base32.encode("secret"), digits = len, radix = 36).generateOtp(123L)
                 assertEquals(len, otp3.length)
             }
         }
@@ -47,7 +47,7 @@ class OTPTest {
             listOf<Any>(123456789L, "00TQIHYE", 36),
         ).map { item ->
             DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => generateOtp(${item[0] as Long}): ${item[1] as String}") {
-                val otp = OTP(secret = Base32.encode("secret"), digits = 8, base = item[2] as Int)
+                val otp = OTP(secret = Base32.encode("secret"), digits = 8, radix = item[2] as Int)
                     .generateOtp(item[0] as Long)
                 assertEquals(item[1] as String, otp)
             }

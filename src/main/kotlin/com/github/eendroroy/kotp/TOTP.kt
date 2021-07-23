@@ -2,7 +2,7 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.TOTPConfig
-import com.github.eendroroy.kotp.exception.UnsupportedBaseForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
@@ -22,7 +22,7 @@ import java.util.Date
  *
  * @author indrajit
  */
-class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, config.digest, config.base) {
+class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, config.digest, config.radix) {
     /**
      * Time-based One-time Password Generator
      * Deprecated
@@ -142,13 +142,13 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
      *
      * @return provisioning uri
      *
-     * @since 0.1.5
+     * @since 1.0.0
      */
     fun provisioningUri(name: String): String {
         UnsupportedIntervalForProvisioningUri.passOrThrow(config.interval)
         UnsupportedDigitsForProvisioningUri.passOrThrow(config.digits)
         UnsupportedDigestForProvisioningUri.passOrThrow(config.digest)
-        UnsupportedBaseForProvisioningUri.passOrThrow(config.base)
+        UnsupportedRadixForProvisioningUri.passOrThrow(config.radix)
 
         val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
 
