@@ -24,7 +24,7 @@ open class OTP(
     private val base: Int = 10
 ) {
     init {
-        if (base < 10 || base > 36) throw InvalidBaseValue()
+        InvalidBaseValue.passOrThrow(base)
     }
 
     /**
