@@ -59,15 +59,18 @@ open class OTP(
     fun generateOtp(input: Long): String {
         val hMac = Mac.getInstance(digest.toString()).let {
             it.init(SecretKeySpec(secret.decode(), digest.toString()))
-            return@let it.doFinal(input.toByteArray())
+            it.doFinal(input.toByteArray())
         }
+
         val offset = hMac.last().toInt().and(0xf)
+
         val code = listOf(
             hMac[offset].toInt().and(0x7f).shl(24),
             hMac[offset + 1].toInt().and(0xff).shl(16),
             hMac[offset + 2].toInt().and(0xff).shl(8),
             hMac[offset + 3].toInt().and(0xff)
         ).reduce(Int::or) % base.toDouble().pow(digits.toDouble()).toInt()
+
         return String.format("%1$" + digits + "s", code.toString(base)).uppercase().replace(' ', '0')
     }
 }
