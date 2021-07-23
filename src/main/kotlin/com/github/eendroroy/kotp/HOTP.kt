@@ -2,7 +2,6 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.HOTPConfig
-import com.github.eendroroy.kotp.exception.UnsupportedBaseValue
 import java.net.URLEncoder
 import java.nio.charset.Charset
 

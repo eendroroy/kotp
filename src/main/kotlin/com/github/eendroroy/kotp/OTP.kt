@@ -2,7 +2,7 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp._ext.toByteArray
 import com.github.eendroroy.kotp.base32.Base32String
-import com.github.eendroroy.kotp.exception.InvalidBaseValue
+import com.github.eendroroy.kotp.exception.BaseValueOutOfRange
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import javax.crypto.Mac
@@ -24,7 +24,7 @@ open class OTP(
     private val base: Int = 10
 ) {
     init {
-        InvalidBaseValue.passOrThrow(base)
+        BaseValueOutOfRange.passOrThrow(base)
     }
 
     /**

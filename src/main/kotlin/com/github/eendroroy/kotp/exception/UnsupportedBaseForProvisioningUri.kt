@@ -5,12 +5,12 @@ import java.lang.RuntimeException
 /**
  * @author indrajit
  */
-class UnsupportedBaseValue : RuntimeException("supports only base value $PROV_BASE_VALUE") {
+class UnsupportedBaseForProvisioningUri : RuntimeException("supports only {$PROV_BASE_VALUE} base") {
     companion object {
         const val PROV_BASE_VALUE = 10
 
         fun passOrThrow(value: Int) {
-            if (PROV_BASE_VALUE != value) throw UnsupportedBaseValue()
+            if (PROV_BASE_VALUE != value) throw UnsupportedBaseForProvisioningUri()
         }
     }
 }

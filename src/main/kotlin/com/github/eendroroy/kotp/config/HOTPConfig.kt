@@ -3,7 +3,7 @@ package com.github.eendroroy.kotp.config
 import com.github.eendroroy.kotp.Digest
 import com.github.eendroroy.kotp.base32.Base32
 import com.github.eendroroy.kotp.base32.Base32String
-import com.github.eendroroy.kotp.exception.InvalidBaseValue
+import com.github.eendroroy.kotp.exception.BaseValueOutOfRange
 
 /**
  * HOTP Configurations
@@ -24,7 +24,7 @@ data class HOTPConfig(
     val base: Int = 10
 ) {
     init {
-        InvalidBaseValue.passOrThrow(base)
+        BaseValueOutOfRange.passOrThrow(base)
     }
 
     /**
