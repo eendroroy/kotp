@@ -142,32 +142,9 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
      *
      * @return provisioning uri
      *
-     * @since 0.1.1
-     */
-    fun provisioningUri(name: String): String {
-        val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
-        val query = listOf(
-            "secret=${encode(config.secret.raw())}",
-            "&period=${config.interval}",
-            "&issuer=${encode(config.issuer)}",
-            "&digits=${config.digits}",
-            "&algorithm=${encode(config.digest.name)}",
-            "&base=${encode(config.base.toString())}",
-        ).joinToString("")
-        return "otpauth://totp/${issuerStr}${encode(name)}?$query"
-    }
-
-    /**
-     * Returns Authenticator App supported provisioning URI
-     * This can then be encoded in a QR Code and used to provision the Google Authenticator app
-     *
-     * @param name name of the account
-     *
-     * @return provisioning uri
-     *
      * @since 0.1.5
      */
-    fun authenticatorProvisioningUri(name: String): String {
+    fun provisioningUri(name: String): String {
         UnsupportedIntervalForProvisioningUri.passOrThrow(config.interval)
         UnsupportedDigitsForProvisioningUri.passOrThrow(config.digits)
         UnsupportedDigestForProvisioningUri.passOrThrow(config.digest)
