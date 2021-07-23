@@ -1,3 +1,7 @@
+# 1.0.0
+- Add supports for `radix` of OTP value, now it is possible to generate alphanumeric OTP
+- Fix `provisioningUri`, now validates explicitly for Google Authenticator support
+
 # 0.1.4
 - RFC4226 and RFC6238 compliance
 - Added support for `SHA256` and `SHA512`
