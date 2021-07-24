@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp._ext.toByteArray
+import com.github.eendroroy.kotp.helper.toByteArray
 import com.github.eendroroy.kotp.base32.Secret
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
 import java.security.InvalidKeyException
