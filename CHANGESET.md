@@ -1,5 +1,7 @@
 # 1.0.*
-- Removed `Base32` and `Base32String` and merged all functionality in newly introduced `Secret`
+- Added `TOTP.at(Long): String`
+- Added `TOTP.verify(String, Long, Long, Long?, Long): Long?`
+- `[Braking change]` Removed `Base32` and `Base32String` and merged all functionality in newly introduced `Secret`
 - Removed `OTP.generateOtp(Int): String`
 - Removed `HOTP(Base32String, Int, Digest)`
 - Removed `HOTP.at(Int): String`

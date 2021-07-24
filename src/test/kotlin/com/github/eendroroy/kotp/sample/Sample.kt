@@ -81,4 +81,5 @@ fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, radix: 
     println("$digits <> $digest <> $radix")
     println("$date  ==>  $otp  <>  ${seconds - (seconds % interval) == verify}")
     println("NOW                           ==>  ${totp.now()}")
+    println("NOW                           ==>  ${totp.at(System.currentTimeMillis()/1_000)}")
 }

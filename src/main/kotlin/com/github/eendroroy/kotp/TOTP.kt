@@ -22,7 +22,6 @@ import java.util.Date
  * @author indrajit
  */
 class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.digest, conf.radix) {
-    private fun timeCode(date: Date): Long = seconds(date) / conf.interval
     private fun timeCode(second: Long): Long = second / conf.interval
 
     /**
@@ -34,6 +33,19 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      * @since 0.1.1
      */
     fun at(time: Date): String {
+        return at(seconds(time))
+    }
+
+
+    /**
+     * Generates OTP at provided epoch seconds [Long]
+     *
+     * @param time epoch seconds
+     * @return generated OTP
+     *
+     * @since 1.0.x
+     */
+    fun at(time: Long): String {
         return generateOtp(timeCode(time))
     }
 
@@ -45,7 +57,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      * @since 0.1.1
      */
     fun now(): String {
-        return generateOtp(timeCode(Calendar.getInstance().time))
+        return generateOtp(System.currentTimeMillis() / 1_000)
     }
 
     /**
@@ -70,10 +82,35 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
         after: Date? = null,
         at: Date = Calendar.getInstance().time
     ): Long? {
-        val now = seconds(at)
-        var start = timeCode(now - driftBehind)
-        after?.let { seconds(it).run { if (start < this) start = this } }
-        val end = timeCode(now + driftAhead)
+        return verify(otp, driftAhead, driftBehind, after?.let(seconds), seconds(at))
+    }
+
+
+    /**
+     * Verifies the OTP against the current time OTP and adjacent intervals using [driftAhead] and [driftBehind].
+     *
+     * Excludes OTPs from [after] and earlier. Returns time value of matching OTP code for use in subsequent call.
+     *
+     * @param otp         OTP to verify
+     * @param driftAhead  seconds to look ahead
+     * @param driftBehind seconds to look back
+     * @param after       prevent token reuse, last login timestamp
+     * @param at          epoch seconds at which to verify OTP. default: current seconds
+     *
+     * @return the last successful timestamp interval
+     *
+     * @since 1.0.x
+     */
+    fun verify(
+        otp: String,
+        driftAhead: Long = 0L,
+        driftBehind: Long = 0L,
+        after: Long? = null,
+        at: Long = System.currentTimeMillis() / 1_000
+    ): Long? {
+        var start = timeCode(at - driftBehind)
+        after?.let { it.run { if (start < this) start = this } }
+        val end = timeCode(at + driftAhead)
         (start..end).forEach { if (otp == generateOtp(it)) return it * conf.interval }
         return null
     }
