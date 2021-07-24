@@ -5,8 +5,11 @@ import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
+import com.github.eendroroy.kotp.helper.currentSeconds
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -22,6 +25,43 @@ class HOTPTest {
 
         assertEquals(config1.secret.decodedString(), config2.secret.decodedString())
         assertEquals(config1.secret.encodedString(), config2.secret.encodedString())
+    }
+
+    @Test
+    fun testOtpAtZeroCounter() {
+        val hotp = HOTP(HOTPConfig("SECRET"))
+        val hotpAt = hotp.at(0)
+
+        assertNotNull(hotpAt)
+        assertNotNull(hotp.verify(hotpAt, counter = 0))
+        assertNull(hotp.verify(hotpAt, counter = 1))
+    }
+
+    @TestFactory
+    fun testOtpGeneration(): Collection<DynamicTest?> {
+        return listOf(
+            listOf<Any>("SECRET", Digest.SHA1, 6, 30, 10),
+            listOf<Any>("SECRET", Digest.SHA256, 8, 30, 10),
+            listOf<Any>("SECRET", Digest.SHA512, 12, 60, 16),
+            listOf<Any>("SECRET", Digest.SHA512, 6, 60, 36),
+        ).map { (secret, digest, digits, interval, radix) ->
+            DynamicTest.dynamicTest(
+                "testOtpGeneration: " +
+                    "[Digest: ${digest as Digest}], " +
+                    "[Digits: ${digits as Int}], " +
+                    "[Interval: ${interval as Int}], " +
+                    "[radix: ${radix as Int}]"
+            ) {
+                val hotp = HOTP(HOTPConfig(secret as String, digits, digest, radix))
+                val counter = currentSeconds()
+                val hotpAt = hotp.at(counter)
+
+                assertNotNull(hotpAt)
+                assertNotNull(hotp.verify(hotpAt, counter = counter))
+                assertNotNull(hotp.verify(hotpAt, counter = counter - 5, retries = 5))
+                assertNull(hotp.verify(hotpAt, counter = counter + 1))
+            }
+        }
     }
 
     @Test

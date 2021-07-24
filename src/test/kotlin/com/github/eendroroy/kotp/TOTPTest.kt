@@ -39,7 +39,10 @@ class TOTPTest {
     @TestFactory
     fun testOtpGeneration(): Collection<DynamicTest?> {
         return listOf(
-            listOf<Any>("SECRET", Digest.SHA1, 6, 300, 10),
+            listOf<Any>("SECRET", Digest.SHA1, 6, 30, 10),
+            listOf<Any>("SECRET", Digest.SHA256, 8, 30, 10),
+            listOf<Any>("SECRET", Digest.SHA512, 12, 60, 16),
+            listOf<Any>("SECRET", Digest.SHA512, 6, 60, 36),
         ).map { (secret, digest, digits, interval, radix) ->
             DynamicTest.dynamicTest(
                 "testOtpGeneration: " +
@@ -53,17 +56,22 @@ class TOTPTest {
                 assertNotNull(totpNow)
                 assertNotNull(totp.verify(totpNow, driftBehind = 5))
 
-                val totpAt = totp.at(Calendar.getInstance().time.time / 1_000)
+                val at = Calendar.getInstance().time.time / 1_000
+                val totpAt = totp.at(at)
                 assertNotNull(totpAt)
                 assertNotNull(totp.verify(totpAt))
+                assertNotNull(totp.verify(totpAt, after = at + 1, driftBehind = 1))
+                assertNull(totp.verify(totpAt, after = at + interval + 10))
             }
         }
     }
 
     @Test
     fun testPassProvisioningUri() {
-        val uri = TOTP(TOTPConfig("secret", "kotp_lib")).provisioningUri("kotp")
-        assertEquals("otpauth://totp/kotp_lib:kotp?secret=ONSWG4TFOQ&issuer=kotp_lib", uri)
+        val uri1 = TOTP(TOTPConfig("secret", "kotp_lib")).provisioningUri("kotp")
+        assertEquals("otpauth://totp/kotp_lib:kotp?secret=ONSWG4TFOQ&issuer=kotp_lib", uri1)
+        val uri2 = TOTP(TOTPConfig("secret", "")).provisioningUri("kotp")
+        assertEquals("otpauth://totp/kotp?secret=ONSWG4TFOQ&issuer=", uri2)
     }
 
     @Test

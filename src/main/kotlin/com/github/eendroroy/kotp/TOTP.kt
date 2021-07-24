@@ -69,7 +69,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
         driftBehind: Long = 0L,
     ): Long? {
         var start = timeCode(at - driftBehind)
-        after?.let { it.run { if (start < this) start = this } }
+        after?.let { timeCode(it) }?.run { if (start < this) start = this }
         val end = timeCode(at + driftAhead)
         (start..end).forEach { if (otp == generateOtp(it)) return it * conf.interval }
         return null
