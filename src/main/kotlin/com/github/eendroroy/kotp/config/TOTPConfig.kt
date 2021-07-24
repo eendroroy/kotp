@@ -1,7 +1,6 @@
 package com.github.eendroroy.kotp.config
 
 import com.github.eendroroy.kotp.Digest
-import com.github.eendroroy.kotp.base32.Secret
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
 
 /**

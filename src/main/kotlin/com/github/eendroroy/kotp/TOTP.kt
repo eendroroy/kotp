@@ -37,7 +37,6 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
         return at(seconds(time))
     }
 
-
     /**
      * Generates OTP at provided epoch seconds [Long]
      *
@@ -85,7 +84,6 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
     ): Long? {
         return verify(otp, driftAhead, driftBehind, after?.let(seconds), seconds(at))
     }
-
 
     /**
      * Verifies the OTP against the current time OTP and adjacent intervals using [driftAhead] and [driftBehind].

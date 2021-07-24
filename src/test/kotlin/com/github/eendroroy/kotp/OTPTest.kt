@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp.base32.Secret
+import com.github.eendroroy.kotp.config.Secret
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory

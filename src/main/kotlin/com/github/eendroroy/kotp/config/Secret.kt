@@ -1,4 +1,4 @@
-package com.github.eendroroy.kotp.base32
+package com.github.eendroroy.kotp.config
 
 import org.apache.commons.codec.binary.Base32
 import java.security.SecureRandom
