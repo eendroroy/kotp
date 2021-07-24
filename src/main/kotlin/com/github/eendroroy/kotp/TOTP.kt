@@ -5,6 +5,7 @@ import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
+import com.github.eendroroy.kotp.helper.currentSeconds
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.util.Calendar
@@ -57,7 +58,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      * @since 0.1.1
      */
     fun now(): String {
-        return generateOtp(System.currentTimeMillis() / 1_000)
+        return generateOtp(currentSeconds())
     }
 
     /**
@@ -106,7 +107,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
         driftAhead: Long = 0L,
         driftBehind: Long = 0L,
         after: Long? = null,
-        at: Long = System.currentTimeMillis() / 1_000
+        at: Long = currentSeconds()
     ): Long? {
         var start = timeCode(at - driftBehind)
         after?.let { it.run { if (start < this) start = this } }
