@@ -13,7 +13,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
  *
  * @author indrajit
  *
- * @since 1.0.x
+ * @since 1.0.1
  */
 data class HOTPConfig(
     val secret: Secret,
@@ -33,7 +33,7 @@ data class HOTPConfig(
      *
      * @author indrajit
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     constructor(secret: String, digits: Int = 6, digest: Digest = Digest.SHA1, radix: Int = 10) : this(
         Secret(secret), digits, digest, radix

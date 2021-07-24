@@ -22,7 +22,7 @@ buildscript {
 }
 
 group = "com.github.eendroroy"
-version = "1.0.0"
+version = "1.0.1"
 val isReleaseVersion = !"$version".endsWith("SNAPSHOT")
 
 dependencies {

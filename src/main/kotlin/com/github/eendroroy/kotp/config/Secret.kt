@@ -8,7 +8,7 @@ import java.security.SecureRandom
  *
  * @author indrajit
  *
- * @since 1.0.x
+ * @since 1.0.1
  */
 class Secret(secretString: String) {
     private val decodedString: String = secretString
@@ -20,7 +20,7 @@ class Secret(secretString: String) {
      *
      * @return [String]
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     fun encodedString() = encodedString
 
@@ -29,7 +29,7 @@ class Secret(secretString: String) {
      *
      * @return [ByteArray]
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     fun encoded() = encodedBytes
 
@@ -38,7 +38,7 @@ class Secret(secretString: String) {
      *
      * @return [String]
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     fun decodedString() = decodedString
 
@@ -47,7 +47,7 @@ class Secret(secretString: String) {
      *
      * @return [ByteArray]
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     fun decoded() = decodedString.toByteArray()
 
@@ -57,7 +57,7 @@ class Secret(secretString: String) {
          *
          * @return [Secret]
          *
-         * @since 1.0.x
+         * @since 1.0.1
          */
         fun random(byteLength: Int = 20): Secret {
             return Secret(SecureRandom().generateSeed(byteLength).toString())

@@ -29,7 +29,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      * @param time epoch seconds
      * @return generated OTP
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     fun at(time: Long): String {
         return generateOtp(timeCode(time))
@@ -59,7 +59,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      *
      * @return the last successful timestamp interval
      *
-     * @since 1.0.x
+     * @since 1.0.1
      */
     fun verify(
         otp: String,
