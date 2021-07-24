@@ -5,6 +5,8 @@ import java.lang.RuntimeException
 
 /**
  * @author indrajit
+ *
+ * @since 1.0.0
  */
 class UnsupportedDigestForProvisioningUri : RuntimeException("supports only {$PROV_DIGEST_VALUE}") {
     companion object {

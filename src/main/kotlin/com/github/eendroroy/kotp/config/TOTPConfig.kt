@@ -15,7 +15,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
  *
  * @author indrajit
  *
- * @since 0.1.2
+ * @since 1.0.x
  */
 data class TOTPConfig(
     val secret: Secret,

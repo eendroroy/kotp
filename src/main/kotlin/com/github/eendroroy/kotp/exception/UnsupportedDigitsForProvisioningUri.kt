@@ -2,6 +2,8 @@ package com.github.eendroroy.kotp.exception
 
 /**
  * @author indrajit
+ *
+ * @since 1.0.0
  */
 class UnsupportedDigitsForProvisioningUri : RuntimeException("supports only {$PROV_DIGIT_VALUE} digits") {
     companion object {

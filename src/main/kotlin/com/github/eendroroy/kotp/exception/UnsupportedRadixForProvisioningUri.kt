@@ -4,6 +4,8 @@ import java.lang.RuntimeException
 
 /**
  * @author indrajit
+ *
+ * @since 1.0.0
  */
 class UnsupportedRadixForProvisioningUri : RuntimeException("supports only {$PROV_RADIX_VALUE} radix") {
     companion object {

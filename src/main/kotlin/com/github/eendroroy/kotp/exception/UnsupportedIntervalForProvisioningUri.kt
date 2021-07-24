@@ -2,6 +2,8 @@ package com.github.eendroroy.kotp.exception
 
 /**
  * @author indrajit
+ *
+ * @since 1.0.0
  */
 class UnsupportedIntervalForProvisioningUri : RuntimeException("supports only {$PROV_INTERVAL_VALUE} second interval") {
     companion object {
