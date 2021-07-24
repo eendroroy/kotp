@@ -16,41 +16,15 @@ import java.util.Date
  *
  * @constructor
  *
- * @param config OTP properties
+ * @param conf OTP properties
  *
  * @since 0.1.2
  *
  * @author indrajit
  */
-class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, config.digest, config.radix) {
-    /**
-     * Time-based One-time Password Generator
-     * Deprecated
-     *
-     * @param secret   secret string encoded by [com.github.eendroroy.kotp.base32.Base32]
-     * @param digits   length of the otp, default: 6
-     * @param digest   algorithm to use, default: [Digest.SHA1]
-     * @param interval interval in seconds to generate new OTP, default: 30
-     * @param issuer   name of the issuer
-     *
-     * @since 0.1.1
-     */
-    @Deprecated(
-        message = "Since version: 0.1.2",
-        replaceWith = ReplaceWith(
-            "TOTP(TOTPConfig(secret, issuer, digits = digits, interval = interval, digest = digest))"
-        )
-    )
-    constructor(
-        secret: Base32String,
-        digits: Int = 6,
-        digest: Digest = Digest.SHA1,
-        interval: Int = 30,
-        issuer: String
-    ) : this(TOTPConfig(secret, issuer, digits, interval, digest))
-
-    private fun timeCode(date: Date): Long = seconds(date) / config.interval
-    private fun timeCode(second: Long): Long = second / config.interval
+class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.digest, conf.radix) {
+    private fun timeCode(date: Date): Long = seconds(date) / conf.interval
+    private fun timeCode(second: Long): Long = second / conf.interval
 
     /**
      * Generates OTP at provided [Date]
@@ -101,37 +75,8 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
         var start = timeCode(now - driftBehind)
         after?.let { seconds(it).run { if (start < this) start = this } }
         val end = timeCode(now + driftAhead)
-        (start..end).forEach { if (otp == generateOtp(it)) return it * config.interval }
+        (start..end).forEach { if (otp == generateOtp(it)) return it * conf.interval }
         return null
-    }
-
-    /**
-     * Verifies the OTP against the current time OTP and adjacent intervals using [driftAhead] and [driftBehind].
-     *
-     * Excludes OTPs from [after] and earlier. Returns time value of matching OTP code for use in subsequent call.
-     *
-     * @param otp         OTP to verify
-     * @param driftAhead  seconds to look ahead
-     * @param driftBehind seconds to look back
-     * @param after       prevent token reuse, last login timestamp
-     * @param at          time at which to verify OTP. default: current time
-     *
-     * @return the last successful timestamp interval
-     *
-     * @since 0.1.1
-     */
-    @Deprecated(
-        message = "Deprecated since version: 0.1.3",
-        replaceWith = ReplaceWith("verify(otp, driftAhead.toLong(), driftBehind.toLong(), after, at)")
-    )
-    fun verify(
-        otp: String,
-        driftAhead: Int,
-        driftBehind: Int,
-        after: Date? = null,
-        at: Date = Calendar.getInstance().time
-    ): Int? {
-        return verify(otp, driftAhead.toLong(), driftBehind.toLong(), after, at)?.toInt()
     }
 
     /**
@@ -145,16 +90,16 @@ class TOTP(private val config: TOTPConfig) : OTP(config.secret, config.digits, c
      * @since 1.0.0
      */
     fun provisioningUri(name: String): String {
-        UnsupportedIntervalForProvisioningUri.passOrThrow(config.interval)
-        UnsupportedDigitsForProvisioningUri.passOrThrow(config.digits)
-        UnsupportedDigestForProvisioningUri.passOrThrow(config.digest)
-        UnsupportedRadixForProvisioningUri.passOrThrow(config.radix)
+        UnsupportedIntervalForProvisioningUri.passOrThrow(conf.interval)
+        UnsupportedDigitsForProvisioningUri.passOrThrow(conf.digits)
+        UnsupportedDigestForProvisioningUri.passOrThrow(conf.digest)
+        UnsupportedRadixForProvisioningUri.passOrThrow(conf.radix)
 
-        val issuerStr = if (config.issuer.isNotEmpty()) "${encode(config.issuer)}:" else ""
+        val issuerStr = if (conf.issuer.isNotEmpty()) "${encode(conf.issuer)}:" else ""
 
         val query = listOf(
-            "secret=${encode(config.secret.raw())}",
-            "&issuer=${encode(config.issuer)}"
+            "secret=${encode(conf.secret.raw())}",
+            "&issuer=${encode(conf.issuer)}"
         ).joinToString("")
 
         return "otpauth://totp/${issuerStr}${encode(name)}?$query"

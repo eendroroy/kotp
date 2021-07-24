@@ -77,18 +77,4 @@ class HOTPTest {
 
         Assertions.assertTrue(exception.message == "supports only {${UnsupportedRadixForProvisioningUri.PROV_RADIX_VALUE}} radix")
     }
-
-    @TestFactory
-    fun testBackwardCompatibility(): Collection<DynamicTest?> {
-        @Suppress("DEPRECATION")
-        val hotpOld = HOTP(secret = Base32.encode("secret"))
-        val hotpNew = HOTP(HOTPConfig("secret"))
-
-        return listOf(1L, 2L, 3L, 4L, 1_111_111_111L, 1_234_567_890L, 2_000_000_000L, 2_111_333_222L).map {
-            DynamicTest.dynamicTest("testBackwardCompatibility => counter: $it") {
-                assertEquals(hotpNew.at(it), hotpOld.at(it))
-                assertEquals(hotpNew.provisioningUri("kotp"), hotpOld.provisioningUri("kotp"))
-            }
-        }
-    }
 }

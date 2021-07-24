@@ -29,25 +29,6 @@ open class OTP(
 
     /**
      * Generates OTP from input
-     * Deprecated
-     *
-     * @param input either a counter or unix timestamp
-     *
-     * @return generated OTP
-     *
-     * @since 0.1.1
-     */
-    @Deprecated(
-        message = "Deprecated since version: 0.1.3",
-        replaceWith = ReplaceWith("generateOtp(input.toLong())")
-    )
-    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
-    fun generateOtp(input: Int): String {
-        return generateOtp(input.toLong())
-    }
-
-    /**
-     * Generates OTP from input
      *
      * @param input either a counter or unix timestamp
      *

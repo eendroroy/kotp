@@ -1,6 +1,5 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp.base32.Base32
 import com.github.eendroroy.kotp.config.TOTPConfig
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri.Companion.PROV_DIGEST_VALUE
@@ -148,20 +147,5 @@ class TOTPTest {
         }
 
         assertTrue(exception.message == "supports only {${PROV_RADIX_VALUE}} radix")
-    }
-
-    @TestFactory
-    fun testBackwardCompatibility(): Collection<DynamicTest?> {
-        @Suppress("DEPRECATION")
-        val totpOld = TOTP(Base32.encode("secret"), issuer = "kotp-lib")
-        val totpNew = TOTP(TOTPConfig(Base32.encode("secret"), "kotp-lib"))
-
-        return listOf(1, 2, 3, 4, 1_111_111_111, 1_234_567_890, 2_000_000_000, 2_111_333_222).map {
-            DynamicTest.dynamicTest("testBackwardCompatibility => time: $it") {
-                val time = Calendar.getInstance().apply { timeInMillis = it * 1_000L }.time
-                assertEquals(totpNew.at(time), totpOld.at(time))
-                assertEquals(totpNew.provisioningUri("kotp"), totpOld.provisioningUri("kotp"))
-            }
-        }
     }
 }

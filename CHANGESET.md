@@ -1,9 +1,18 @@
+# 1.0.*
+- Removed `OTP.generateOtp(Int): String`
+- Removed `HOTP(Base32String, Int, Digest)`
+- Removed `HOTP.at(Int): String`
+- Removed `HOTP.verify(String, Int, Int): Int?`
+- Removed `HOTP.provisioningUri(String, Int): String?`
+- Removed `TOTP(Base32String, Int, Digest, Int, String)`
+- Removed `TOTP.verify(String, Int, Int, Date?, Date): Int?`
+
 # 1.0.0
 - Add supports for `radix` of OTP value, now it is possible to generate alphanumeric OTP
 - Fix `provisioningUri`, now validates explicitly for Google Authenticator support
 
 # 0.1.4
-- RFC4226 and RFC6238 compliance
+- `RFC4226` and `RFC6238` compliance
 - Added support for `SHA256` and `SHA512`
 
 # 0.1.3
