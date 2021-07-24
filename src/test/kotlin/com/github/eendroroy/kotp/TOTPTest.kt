@@ -1,6 +1,9 @@
 package com.github.eendroroy.kotp
 
+import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.config.TOTPConfig
+import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
+import com.github.eendroroy.kotp.exception.RadixValueOutOfRange.Companion.RADIX_VALUE_RANGE
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri.Companion.PROV_DIGEST_VALUE
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
@@ -11,6 +14,8 @@ import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri.Companion.PROV_RADIX_VALUE
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DynamicTest
@@ -22,8 +27,100 @@ import java.util.Calendar
  * @author indrajit
  */
 class TOTPTest {
+    @Test
+    fun testConfig() {
+        val config1 = TOTPConfig(Secret("secret"), "")
+        val config2 = TOTPConfig("secret", "")
+
+        assertEquals(config1.secret.decodedString(), config2.secret.decodedString())
+        assertEquals(config1.secret.encodedString(), config2.secret.encodedString())
+    }
+
     @TestFactory
-    fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
+    fun testOtpGeneration(): Collection<DynamicTest?> {
+        return listOf(
+            listOf<Any>("SECRET", Digest.SHA1, 6, 300, 10),
+        ).map { (secret, digest, digits, interval, radix) ->
+            DynamicTest.dynamicTest(
+                "testOtpGeneration: " +
+                    "[Digest: ${digest as Digest}], " +
+                    "[Digits: ${digits as Int}], " +
+                    "[Interval: ${interval as Int}], " +
+                    "[radix: ${radix as Int}]"
+            ) {
+                val totp = TOTP(TOTPConfig(secret as String, "KOTP", digits, interval, digest, radix))
+                val totpNow = totp.now()
+                assertNotNull(totpNow)
+                assertNotNull(totp.verify(totpNow, driftBehind = 5))
+
+                val totpAt = totp.at(Calendar.getInstance().time.time / 1_000)
+                assertNotNull(totpAt)
+                assertNotNull(totp.verify(totpAt))
+            }
+        }
+    }
+
+    @Test
+    fun testPassProvisioningUri() {
+        val uri = TOTP(TOTPConfig("secret", "kotp_lib")).provisioningUri("kotp")
+        assertEquals("otpauth://totp/kotp_lib:kotp?secret=ONSWG4TFOQ&issuer=kotp_lib", uri)
+    }
+
+    @Test
+    fun testFailWithRadixValueOutOfRange() {
+        val exception = assertThrows(RadixValueOutOfRange::class.java) {
+            TOTP(TOTPConfig("secret", "kotp_lib", interval = 60, radix = 2))
+        }
+
+        assertTrue(exception.message == "radix was not in valid range {$RADIX_VALUE_RANGE}")
+    }
+
+    @Test
+    fun testFailWithUnsupportedIntervalForProvisioningUri() {
+        val totp = TOTP(TOTPConfig("secret", "kotp_lib", interval = 60))
+
+        val exception = assertThrows(UnsupportedIntervalForProvisioningUri::class.java) {
+            totp.provisioningUri("kotp")
+        }
+
+        assertTrue(exception.message == "supports only {$PROV_INTERVAL_VALUE} second interval")
+    }
+
+    @Test
+    fun testFailWithUnsupportedDigitsForProvisioningUri() {
+        val totp = TOTP(TOTPConfig("secret", "kotp_lib", digits = 8))
+
+        val exception = assertThrows(UnsupportedDigitsForProvisioningUri::class.java) {
+            totp.provisioningUri("kotp")
+        }
+
+        assertTrue(exception.message == "supports only {$PROV_DIGIT_VALUE} digits")
+    }
+
+    @Test
+    fun testFailWithUnsupportedDigestForProvisioningUri() {
+        val totp = TOTP(TOTPConfig("secret", "kotp_lib", digest = Digest.SHA512))
+
+        val exception = assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
+            totp.provisioningUri("kotp")
+        }
+
+        assertTrue(exception.message == "supports only {$PROV_DIGEST_VALUE}")
+    }
+
+    @Test
+    fun testFailWithUnsupportedRadixForProvisioningUri() {
+        val totp = TOTP(TOTPConfig("secret", "kotp_lib", radix = 16))
+
+        val exception = assertThrows(UnsupportedRadixForProvisioningUri::class.java) {
+            totp.provisioningUri("kotp")
+        }
+
+        assertTrue(exception.message == "supports only {$PROV_RADIX_VALUE} radix")
+    }
+
+    @TestFactory
+    fun testGeneratedOtpAgainstRFCSample(): Collection<DynamicTest?> {
         return listOf(
             listOf<Any>(59L, "94287082", Digest.SHA1, "12345678901234567890"),
             listOf<Any>(59L, "46119246", Digest.SHA256, "12345678901234567890123456789012"),
@@ -79,73 +176,17 @@ class TOTPTest {
             ) {
                 val interval = 30
                 val totp = TOTP(TOTPConfig(seed as String, "kotp_lib", 8, interval, digest))
-                val time = Calendar.getInstance().apply { timeInMillis = seconds * 1_000L }.time
-                val timeNext = Calendar.getInstance().apply { timeInMillis = (seconds + interval) * 1_000L }.time
-                val otp = totp.at(time)
+                val timeNext = seconds + interval
+                val otp = totp.at(seconds)
                 val otpNext = totp.at(timeNext)
 
                 assertEquals(otp, otpStr)
                 assertNotEquals(otpNext, otpStr)
 
-                assertEquals(
-                    seconds / interval,
-                    totp.verify(otp, at = time) as Long / interval
-                )
-                assertNotEquals(
-                    seconds / interval,
-                    totp.verify(otpNext, at = timeNext) as Long / interval
-                )
+                assertEquals(seconds / interval, totp.verify(otp, at = seconds) as Long / interval)
+                assertNotEquals(seconds / interval, totp.verify(otpNext, at = timeNext) as Long / interval)
+                assertNull(totp.verify(otpNext, at = seconds + 1_000))
             }
         }
-    }
-
-    @Test
-    fun testPassProvisioningUri() {
-        val uri = TOTP(TOTPConfig("secret", "kotp_lib", digits = 6, interval = 30)).provisioningUri("kotp")
-        assertEquals("otpauth://totp/kotp_lib:kotp?secret=ONSWG4TFOQ&issuer=kotp_lib", uri)
-    }
-
-    @Test
-    fun testFailWithUnsupportedIntervalForProvisioningUri() {
-        val totp = TOTP(TOTPConfig("secret", "kotp_lib", interval = 60))
-
-        val exception = assertThrows(UnsupportedIntervalForProvisioningUri::class.java) {
-            totp.provisioningUri("kotp")
-        }
-
-        assertTrue(exception.message == "supports only {$PROV_INTERVAL_VALUE} second interval")
-    }
-
-    @Test
-    fun testFailWithUnsupportedDigitsForProvisioningUri() {
-        val totp = TOTP(TOTPConfig("secret", "kotp_lib", digits = 8))
-
-        val exception = assertThrows(UnsupportedDigitsForProvisioningUri::class.java) {
-            totp.provisioningUri("kotp")
-        }
-
-        assertTrue(exception.message == "supports only {$PROV_DIGIT_VALUE} digits")
-    }
-
-    @Test
-    fun testFailWithUnsupportedDigestForProvisioningUri() {
-        val totp = TOTP(TOTPConfig("secret", "kotp_lib", digest = Digest.SHA512))
-
-        val exception = assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
-            totp.provisioningUri("kotp")
-        }
-
-        assertTrue(exception.message == "supports only {$PROV_DIGEST_VALUE}")
-    }
-
-    @Test
-    fun testFailWithUnsupportedRadixForProvisioningUri() {
-        val totp = TOTP(TOTPConfig("secret", "kotp_lib", radix = 16))
-
-        val exception = assertThrows(UnsupportedRadixForProvisioningUri::class.java) {
-            totp.provisioningUri("kotp")
-        }
-
-        assertTrue(exception.message == "supports only {$PROV_RADIX_VALUE} radix")
     }
 }

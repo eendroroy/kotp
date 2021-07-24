@@ -1,6 +1,9 @@
 # 1.0.*
+
 - Added `TOTP.at(Long): String`
-- Added `TOTP.verify(String, Long, Long, Long?, Long): Long?`
+- Added `TOTP.verify(String, Long, Long?, Long, Long): Long?`
+- `[Braking change]` Removed `TOTP.verify(String, Long, Long, Date?, Date): Long?`
+- `[Braking change]` Removed `TOTP.at(Date): String`
 - `[Braking change]` Removed `Base32` and `Base32String` and merged all functionality in newly introduced `Secret`
 - Removed `OTP.generateOtp(Int): String`
 - Removed `HOTP(Base32String, Int, Digest)`
@@ -11,17 +14,21 @@
 - Removed `TOTP.verify(String, Int, Int, Date?, Date): Int?`
 
 # 1.0.0
+
 - Add supports for `radix` of OTP value, now it is possible to generate alphanumeric OTP
 - Fix `provisioningUri`, now validates explicitly for Google Authenticator support
 
 # 0.1.4
+
 - `RFC4226` and `RFC6238` compliance
 - Added support for `SHA256` and `SHA512`
 
 # 0.1.3
+
 - Use Long value as otp input/counter
 
 **Deprecations**
+
 - `OTP.generateOtp(Int): String` (use: `OTP.generateOtp(Long): String`)
 - `HOTP.at(Int): String` (use: `HOTP.at(Long): String`)
 - `HOTP.verify(String, Int, Int): Int?` (use: `HOTP.verify(String, Long, Long): Long?`)
@@ -29,10 +36,12 @@
 - `TOTP.verify(String, Int, Int, Date?, Date): Int?` (use: `TOTP.verify(String, Long, Long, Date?, Date): Long?`)
 
 # 0.1.2
+
 - Added `Base32` and `Base32String` classes
 - `HOTP` and `TOTP` secrets are now `Base32String`
 - Added `HOTPConfig` and `TOTPConfig`
 
 **Deprecations**
+
 - `HOTP(Base32String, Int, Digest)` (use: `HOTP(HOTPConfig)`)
 - `TOTP(Base32String, Int, Digest, Int, String)` (use: `HOTP(TOTPConfig)`)

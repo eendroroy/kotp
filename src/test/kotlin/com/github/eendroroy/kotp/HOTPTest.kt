@@ -1,6 +1,7 @@
 package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.config.HOTPConfig
+import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
@@ -14,28 +15,13 @@ import org.junit.jupiter.api.TestFactory
  * @author indrajit
  */
 class HOTPTest {
-    @TestFactory
-    fun testGeneratedOtpAgainstSample(): Collection<DynamicTest?> {
-        val hotp = HOTP(HOTPConfig("12345678901234567890"))
-        return listOf(
-            Pair(0L, "755224"),
-            Pair(1L, "287082"),
-            Pair(2L, "359152"),
-            Pair(3L, "969429"),
-            Pair(4L, "338314"),
-            Pair(5L, "254676"),
-            Pair(6L, "287922"),
-            Pair(7L, "162583"),
-            Pair(8L, "399871"),
-            Pair(9L, "520489")
-        ).map { pair ->
-            DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => at(${pair.first}): ${pair.second}") {
-                val otp = hotp.at(pair.first)
-                assertEquals(pair.second, otp)
-                assertEquals(pair.first, hotp.verify(pair.second, pair.first))
-                assertEquals(pair.first, hotp.verify(pair.second, 0, retries = pair.first))
-            }
-        }
+    @Test
+    fun testConfig() {
+        val config1 = HOTPConfig(Secret("secret"))
+        val config2 = HOTPConfig("secret")
+
+        assertEquals(config1.secret.decodedString(), config2.secret.decodedString())
+        assertEquals(config1.secret.encodedString(), config2.secret.encodedString())
     }
 
     @Test
@@ -75,5 +61,29 @@ class HOTPTest {
         }
 
         Assertions.assertTrue(exception.message == "supports only {${UnsupportedRadixForProvisioningUri.PROV_RADIX_VALUE}} radix")
+    }
+
+    @TestFactory
+    fun testGeneratedOtpAgainstRFCSample(): Collection<DynamicTest?> {
+        val hotp = HOTP(HOTPConfig("12345678901234567890"))
+        return listOf(
+            Pair(0L, "755224"),
+            Pair(1L, "287082"),
+            Pair(2L, "359152"),
+            Pair(3L, "969429"),
+            Pair(4L, "338314"),
+            Pair(5L, "254676"),
+            Pair(6L, "287922"),
+            Pair(7L, "162583"),
+            Pair(8L, "399871"),
+            Pair(9L, "520489")
+        ).map { pair ->
+            DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => at(${pair.first}): ${pair.second}") {
+                val otp = hotp.at(pair.first)
+                assertEquals(pair.second, otp)
+                assertEquals(pair.first, hotp.verify(pair.second, pair.first))
+                assertEquals(pair.first, hotp.verify(pair.second, 0, retries = pair.first))
+            }
+        }
     }
 }

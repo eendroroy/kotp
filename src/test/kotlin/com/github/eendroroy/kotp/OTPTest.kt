@@ -3,7 +3,10 @@ package com.github.eendroroy.kotp
 import com.github.eendroroy.kotp.config.Secret
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.assertThrows
+import java.lang.IllegalArgumentException
 
 /**
  * @author indrajit
@@ -13,10 +16,18 @@ class OTPTest {
     fun testOtpGenerationUsingDigest(): Collection<DynamicTest?> {
         return Digest.values().map { digest ->
             DynamicTest.dynamicTest("testOtpGenerationUsing => ${digest.name}") {
-                val otp = OTP(secret = Secret("secret"), digits = 6, digest = digest).generateOtp(123L)
+                val otp = OTP(secret = Secret("secret"), digest = digest).generateOtp(123L)
                 assertEquals(6, otp.length)
             }
         }
+    }
+
+    @Test
+    fun testFailWithIllegalArgumentException() {
+        val otp = OTP(secret = Secret("secret"))
+        val exception = assertThrows<IllegalArgumentException> { otp.generateOtp(-1) }
+
+        assertEquals("#toByteArray requires a positive number", exception.localizedMessage)
     }
 
     @TestFactory

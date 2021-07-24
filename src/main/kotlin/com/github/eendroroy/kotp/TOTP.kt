@@ -26,18 +26,6 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
     private fun timeCode(second: Long): Long = second / conf.interval
 
     /**
-     * Generates OTP at provided [Date]
-     *
-     * @param time time
-     * @return generated OTP
-     *
-     * @since 0.1.1
-     */
-    fun at(time: Date): String {
-        return at(seconds(time))
-    }
-
-    /**
      * Generates OTP at provided epoch seconds [Long]
      *
      * @param time epoch seconds
@@ -57,7 +45,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      * @since 0.1.1
      */
     fun now(): String {
-        return generateOtp(currentSeconds())
+        return at(currentSeconds())
     }
 
     /**
@@ -66,35 +54,10 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      * Excludes OTPs from [after] and earlier. Returns time value of matching OTP code for use in subsequent call.
      *
      * @param otp         OTP to verify
-     * @param driftAhead  seconds to look ahead
-     * @param driftBehind seconds to look back
-     * @param after       prevent token reuse, last login timestamp
-     * @param at          time at which to verify OTP. default: current time
-     *
-     * @return the last successful timestamp interval
-     *
-     * @since 0.1.3
-     */
-    fun verify(
-        otp: String,
-        driftAhead: Long = 0L,
-        driftBehind: Long = 0L,
-        after: Date? = null,
-        at: Date = Calendar.getInstance().time
-    ): Long? {
-        return verify(otp, driftAhead, driftBehind, after?.let(seconds), seconds(at))
-    }
-
-    /**
-     * Verifies the OTP against the current time OTP and adjacent intervals using [driftAhead] and [driftBehind].
-     *
-     * Excludes OTPs from [after] and earlier. Returns time value of matching OTP code for use in subsequent call.
-     *
-     * @param otp         OTP to verify
-     * @param driftAhead  seconds to look ahead
-     * @param driftBehind seconds to look back
-     * @param after       prevent token reuse, last login timestamp
      * @param at          epoch seconds at which to verify OTP. default: current seconds
+     * @param after       prevent token reuse, last login timestamp
+     * @param driftAhead  seconds to look ahead
+     * @param driftBehind seconds to look back
      *
      * @return the last successful timestamp interval
      *
@@ -102,10 +65,10 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
      */
     fun verify(
         otp: String,
+        at: Long = currentSeconds(),
+        after: Long? = null,
         driftAhead: Long = 0L,
         driftBehind: Long = 0L,
-        after: Long? = null,
-        at: Long = currentSeconds()
     ): Long? {
         var start = timeCode(at - driftBehind)
         after?.let { it.run { if (start < this) start = this } }
@@ -141,10 +104,6 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
     }
 
     companion object {
-        private val seconds = { date: Date ->
-            (Calendar.getInstance().apply { this.time = date }.timeInMillis / 1_000)
-        }
-
         private val encode = { value: String ->
             URLEncoder.encode(value, Charset.defaultCharset().toString())
         }

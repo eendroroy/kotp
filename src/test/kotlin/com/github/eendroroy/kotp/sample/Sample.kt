@@ -5,6 +5,7 @@ import com.github.eendroroy.kotp.HOTP
 import com.github.eendroroy.kotp.TOTP
 import com.github.eendroroy.kotp.config.HOTPConfig
 import com.github.eendroroy.kotp.config.TOTPConfig
+import com.github.eendroroy.kotp.helper.currentSeconds
 import java.lang.RuntimeException
 import java.util.Calendar
 
@@ -65,11 +66,13 @@ fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, radix: 
         radix = radix
     )
     val totp = TOTP(config)
-    val date = Calendar.getInstance().time
-    val seconds = date.time / 1_000
+    val seconds = Calendar.getInstance().time.time / 1_000
 
-    val otp = totp.at(date)
-    val verify = totp.verify(otp, at = date)
+    val otp = totp.at(seconds)
+    val verify = totp.verify(otp, at = seconds)
+
+    val otpNow = totp.now()
+    val verifyNow = totp.verify(otpNow)
 
     println()
     println()
@@ -79,7 +82,6 @@ fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, radix: 
         println(ex.localizedMessage)
     }
     println("$digits <> $digest <> $radix")
-    println("$date  ==>  $otp  <>  ${seconds - (seconds % interval) == verify}")
-    println("NOW                           ==>  ${totp.now()}")
-    println("NOW                           ==>  ${totp.at(System.currentTimeMillis() / 1_000)}")
+    println("$seconds  ==>  $otp  <>  ${verify != null}")
+    println("NOW         ==>  $otpNow  <>  ${verifyNow != null}")
 }

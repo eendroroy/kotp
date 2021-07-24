@@ -12,7 +12,8 @@ import java.security.SecureRandom
  */
 class Secret(secretString: String) {
     private val decodedString: String = secretString
-    private val encodedString: String = encode(secretString)
+    private val encodedBytes: ByteArray = Base32().encode(secretString.toByteArray())
+    private val encodedString: String = String(encodedBytes).replace("=", "")
 
     /**
      * Returns encoded secret string
@@ -30,7 +31,7 @@ class Secret(secretString: String) {
      *
      * @since 1.0.x
      */
-    fun encoded() = encodedString.toByteArray()
+    fun encoded() = encodedBytes
 
     /**
      * Returns decoded secret string
@@ -51,54 +52,6 @@ class Secret(secretString: String) {
     fun decoded() = decodedString.toByteArray()
 
     companion object {
-        /**
-         * Encodes [ByteArray] to [String]
-         *
-         * @param bytes [ByteArray] to encode
-         *
-         * @return [String]
-         *
-         * @since 1.0.x
-         */
-        fun encode(bytes: ByteArray): String {
-            return Base32().encodeAsString(bytes).replace("=", "")
-        }
-
-        /**
-         * Base32 encodes a [String]
-         *
-         * @param str [String] to encode
-         *
-         * @return [String]
-         *
-         * @since 1.0.x
-         */
-        fun encode(str: String): String {
-            return encode(str.toByteArray())
-        }
-
-        /**
-         * Base32 decodes [String] to [ByteArray]
-         *
-         * @return decoded [ByteArray]
-         *
-         * @since 1.0.x
-         */
-        fun decode(str: String): ByteArray {
-            return Base32().decode(str.toByteArray())
-        }
-
-        /**
-         * Decodes a base32 encoded [String]
-         *
-         * @return decoded [String]
-         *
-         * @since 1.0.x
-         */
-        fun decodeAsString(str: String): String {
-            return String(decode(str))
-        }
-
         /**
          * Generates a random [Secret]
          *
