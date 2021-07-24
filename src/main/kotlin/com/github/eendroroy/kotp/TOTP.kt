@@ -8,8 +8,6 @@ import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.helper.currentSeconds
 import java.net.URLEncoder
 import java.nio.charset.Charset
-import java.util.Calendar
-import java.util.Date
 
 /**
  * Time-based One-time Password Generator

@@ -5,7 +5,6 @@ import com.github.eendroroy.kotp.HOTP
 import com.github.eendroroy.kotp.TOTP
 import com.github.eendroroy.kotp.config.HOTPConfig
 import com.github.eendroroy.kotp.config.TOTPConfig
-import com.github.eendroroy.kotp.helper.currentSeconds
 import java.lang.RuntimeException
 import java.util.Calendar
 
