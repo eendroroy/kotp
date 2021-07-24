@@ -4,6 +4,7 @@ plugins {
     java
     `maven-publish`
     signing
+    jacoco
 
     kotlin("jvm") version "1.5.21"
     id("com.adarshr.test-logger") version "3.0.0"
@@ -60,8 +61,18 @@ testlogger {
     slowThreshold = 10
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
 
 publishing {
