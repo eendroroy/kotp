@@ -1,11 +1,10 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.TOTPConfig
-import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.util.Calendar
@@ -98,7 +97,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
         val issuerStr = if (conf.issuer.isNotEmpty()) "${encode(conf.issuer)}:" else ""
 
         val query = listOf(
-            "secret=${encode(conf.secret.raw())}",
+            "secret=${encode(conf.secret.encodedString())}",
             "&issuer=${encode(conf.issuer)}"
         ).joinToString("")
 

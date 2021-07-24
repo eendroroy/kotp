@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp.base32.Base32
+import com.github.eendroroy.kotp.base32.Secret
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
@@ -13,7 +13,7 @@ class OTPTest {
     fun testOtpGenerationUsingDigest(): Collection<DynamicTest?> {
         return Digest.values().map { digest ->
             DynamicTest.dynamicTest("testOtpGenerationUsing => ${digest.name}") {
-                val otp = OTP(secret = Base32.encode("secret"), digits = 6, digest = digest).generateOtp(123L)
+                val otp = OTP(secret = Secret("secret"), digits = 6, digest = digest).generateOtp(123L)
                 assertEquals(6, otp.length)
             }
         }
@@ -23,11 +23,11 @@ class OTPTest {
     fun testGeneratedOtpLengthIsCorrect(): Collection<DynamicTest?> {
         return listOf(1, 2, 3, 4, 6, 8, 10, 12, 24).map { len ->
             DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $len") {
-                val otp1 = OTP(secret = Base32.encode("secret"), digits = len).generateOtp(123L)
+                val otp1 = OTP(secret = Secret("secret"), digits = len).generateOtp(123L)
                 assertEquals(len, otp1.length)
-                val otp2 = OTP(secret = Base32.encode("secret"), digits = len, radix = 16).generateOtp(123L)
+                val otp2 = OTP(secret = Secret("secret"), digits = len, radix = 16).generateOtp(123L)
                 assertEquals(len, otp2.length)
-                val otp3 = OTP(secret = Base32.encode("secret"), digits = len, radix = 36).generateOtp(123L)
+                val otp3 = OTP(secret = Secret("secret"), digits = len, radix = 36).generateOtp(123L)
                 assertEquals(len, otp3.length)
             }
         }
@@ -47,7 +47,7 @@ class OTPTest {
             listOf<Any>(123456789L, "00TQIHYE", 36),
         ).map { item ->
             DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => generateOtp(${item[0] as Long}): ${item[1] as String}") {
-                val otp = OTP(secret = Base32.encode("secret"), digits = 8, radix = item[2] as Int)
+                val otp = OTP(secret = Secret("secret"), digits = 8, radix = item[2] as Int)
                     .generateOtp(item[0] as Long)
                 assertEquals(item[1] as String, otp)
             }

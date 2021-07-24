@@ -1,6 +1,5 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp.base32.Base32
 import com.github.eendroroy.kotp.config.HOTPConfig
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri

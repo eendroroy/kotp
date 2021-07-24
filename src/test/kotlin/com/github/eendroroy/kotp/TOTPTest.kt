@@ -124,7 +124,7 @@ class TOTPTest {
             totp.provisioningUri("kotp")
         }
 
-        assertTrue(exception.message == "supports only {${PROV_DIGIT_VALUE}} digits")
+        assertTrue(exception.message == "supports only {$PROV_DIGIT_VALUE} digits")
     }
 
     @Test
@@ -146,6 +146,6 @@ class TOTPTest {
             totp.provisioningUri("kotp")
         }
 
-        assertTrue(exception.message == "supports only {${PROV_RADIX_VALUE}} radix")
+        assertTrue(exception.message == "supports only {$PROV_RADIX_VALUE} radix")
     }
 }

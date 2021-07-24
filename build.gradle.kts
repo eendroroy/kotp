@@ -20,7 +20,6 @@ buildscript {
     }
 }
 
-
 group = "com.github.eendroroy"
 version = "1.0.0"
 val isReleaseVersion = !"$version".endsWith("SNAPSHOT")
@@ -64,7 +63,6 @@ testlogger {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-
 
 publishing {
     publications {

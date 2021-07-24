@@ -1,10 +1,9 @@
 package com.github.eendroroy.kotp
 
-import com.github.eendroroy.kotp.base32.Base32String
 import com.github.eendroroy.kotp.config.HOTPConfig
-import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
@@ -66,7 +65,7 @@ class HOTP constructor(private val conf: HOTPConfig) : OTP(conf.secret, conf.dig
         UnsupportedRadixForProvisioningUri.passOrThrow(conf.radix)
 
         val query = listOf(
-            "secret=${encode(conf.secret.raw())}",
+            "secret=${encode(conf.secret.encodedString())}",
             "&counter=${encode(initialCount.toString())}",
         ).joinToString("")
 

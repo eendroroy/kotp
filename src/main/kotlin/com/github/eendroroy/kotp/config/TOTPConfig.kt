@@ -1,14 +1,13 @@
 package com.github.eendroroy.kotp.config
 
 import com.github.eendroroy.kotp.Digest
-import com.github.eendroroy.kotp.base32.Base32
-import com.github.eendroroy.kotp.base32.Base32String
+import com.github.eendroroy.kotp.base32.Secret
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
 
 /**
  * TOTP Configurations
  *
- * @param secret   secret string encoded by [com.github.eendroroy.kotp.base32.Base32]
+ * @param secret   [Secret]
  * @param issuer   name of the issuer
  * @param digits   length of the otp, default: 6
  * @param interval interval in seconds to generate new OTP, default: 30
@@ -20,7 +19,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
  * @since 0.1.2
  */
 data class TOTPConfig(
-    val secret: Base32String,
+    val secret: Secret,
     val issuer: String,
     val digits: Int = 6,
     val interval: Int = 30,
@@ -50,5 +49,5 @@ data class TOTPConfig(
         interval: Int = 30,
         digest: Digest = Digest.SHA1,
         radix: Int = 10
-    ) : this(Base32.encode(secret), issuer, digits, interval, digest, radix)
+    ) : this(Secret(secret), issuer, digits, interval, digest, radix)
 }
