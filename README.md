@@ -30,15 +30,15 @@ OTP generation and validation library.
 <dependency>
     <groupId>com.github.eendroroy</groupId>
     <artifactId>kotp</artifactId>
-    <version>${version}</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
-*Gradle*
+*Gradle*s
 
 ```groovy
 dependencies {
-    implementation("com.github.eendroroy:kotp:${version}")
+    implementation("com.github.eendroroy:kotp:1.0.1")
 }
 ```
 

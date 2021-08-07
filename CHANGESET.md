@@ -1,4 +1,4 @@
-# 1.0.*
+# 1.0.1
 
 - Added `TOTP.at(Long): String`
 - Added `TOTP.verify(String, Long, Long?, Long, Long): Long?`
