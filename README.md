@@ -16,6 +16,8 @@ OTP generation and validation library.
 * Implements [RFC4226](https://datatracker.ietf.org/doc/html/rfc4226)
   and [RFC6238](https://datatracker.ietf.org/doc/html/rfc6238)
 * Compatible with [Google Authenticator](https://github.com/google/google-authenticator).
+* Supports Alphanumeric OTP generation.
+* Supports `HmacSHA1`, `HmacSHA256` and `HmacSHA512` digests.
 
 ### Demo
 
