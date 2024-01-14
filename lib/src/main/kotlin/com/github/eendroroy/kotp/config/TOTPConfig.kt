@@ -8,7 +8,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
  *
  * @param secret    [Secret]
  * @param issuer    name of the issuer
- * @param digits    length of the otp, default: 6
+ * @param length    length of the otp, default: 6
  * @param interval  interval in seconds to generate new OTP, default: 30
  * @param algorithm algorithm to use, default: [Algorithm.SHA1]
  * @param radix     radix/base of the OTP value, default: 10 (decimal)
@@ -20,7 +20,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
 data class TOTPConfig(
     val secret: Secret,
     val issuer: String,
-    val digits: Int = 6,
+    val length: Int = 6,
     val interval: Int = 30,
     val algorithm: Algorithm = Algorithm.SHA1,
     val radix: Int = 10
@@ -32,7 +32,7 @@ data class TOTPConfig(
     /**
      * @param secret    plain secret string
      * @param issuer    name of the issuer
-     * @param digits    length of the otp, default: 6
+     * @param length    length of the otp, default: 6
      * @param interval  interval in seconds to generate new OTP, default: 30
      * @param algorithm algorithm to use, default: [Algorithm.SHA1]
      * @param radix     radix/base of the OTP value, default: 10 (decimal)
@@ -44,9 +44,9 @@ data class TOTPConfig(
     constructor(
         secret: String,
         issuer: String,
-        digits: Int = 6,
+        length: Int = 6,
         interval: Int = 30,
         algorithm: Algorithm = Algorithm.SHA1,
         radix: Int = 10
-    ) : this(Secret(secret), issuer, digits, interval, algorithm, radix)
+    ) : this(Secret(secret), issuer, length, interval, algorithm, radix)
 }

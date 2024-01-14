@@ -2,8 +2,8 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.config.HOTPConfig
 import com.github.eendroroy.kotp.config.Secret
-import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
-import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedAlgorithmForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedOtpLengthForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.extensions.currentSeconds
 import org.junit.jupiter.api.Assertions
@@ -44,15 +44,15 @@ class HOTPTest {
             listOf<Any>("SECRET", Algorithm.SHA256, 8, 30, 10),
             listOf<Any>("SECRET", Algorithm.SHA512, 12, 60, 16),
             listOf<Any>("SECRET", Algorithm.SHA512, 6, 60, 36),
-        ).map { (secret, digest, digits, interval, radix) ->
+        ).map { (secret, algorithm, length, interval, radix) ->
             DynamicTest.dynamicTest(
                 "testOtpGeneration: " +
-                    "[Digest: ${digest as Algorithm}], " +
-                    "[Digits: ${digits as Int}], " +
+                    "[Algorithm: ${algorithm as Algorithm}], " +
+                    "[Length: ${length as Int}], " +
                     "[Interval: ${interval as Int}], " +
                     "[radix: ${radix as Int}]"
             ) {
-                val hotp = HOTP(HOTPConfig(secret as String, digits, digest, radix))
+                val hotp = HOTP(HOTPConfig(secret as String, length, algorithm, radix))
                 val counter = currentSeconds()
                 val hotpAt = hotp.at(counter)
 
@@ -66,30 +66,34 @@ class HOTPTest {
 
     @Test
     fun testPassProvisioningUri() {
-        val uri = HOTP(HOTPConfig("secret", digits = 6, algorithm = Algorithm.SHA1, radix = 10)).provisioningUri("kotp")
+        val uri = HOTP(HOTPConfig("secret", length = 6, algorithm = Algorithm.SHA1, radix = 10)).provisioningUri("kotp")
         assertEquals("otpauth://hotp/kotp?secret=ONSWG4TFOQ&counter=0", uri)
     }
 
     @Test
     fun testFailWithUnsupportedDigitsForProvisioningUri() {
-        val hotp = HOTP(HOTPConfig("secret", digits = 8))
+        val hotp = HOTP(HOTPConfig("secret", length = 8))
 
-        val exception = Assertions.assertThrows(UnsupportedDigitsForProvisioningUri::class.java) {
+        val exception = Assertions.assertThrows(UnsupportedOtpLengthForProvisioningUri::class.java) {
             hotp.provisioningUri("kotp")
         }
 
-        Assertions.assertTrue(exception.message == "supports only {${UnsupportedDigitsForProvisioningUri.PROV_DIGIT_VALUE}} digits")
+        Assertions.assertTrue(
+            exception.message == "supports only {${UnsupportedOtpLengthForProvisioningUri.PROV_LENGTH_VALUE}} digits"
+        )
     }
 
     @Test
     fun testFailWithUnsupportedDigestForProvisioningUri() {
         val hotp = HOTP(HOTPConfig("secret", algorithm = Algorithm.SHA512))
 
-        val exception = Assertions.assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
+        val exception = Assertions.assertThrows(UnsupportedAlgorithmForProvisioningUri::class.java) {
             hotp.provisioningUri("kotp")
         }
 
-        Assertions.assertTrue(exception.message == "supports only {${UnsupportedDigestForProvisioningUri.PROV_DIGEST_VALUEDigest}}")
+        Assertions.assertTrue(
+            exception.message == "supports only {${UnsupportedAlgorithmForProvisioningUri.PROV_ALGORITHM_VALUE}}"
+        )
     }
 
     @Test
@@ -100,7 +104,9 @@ class HOTPTest {
             hotp.provisioningUri("kotp")
         }
 
-        Assertions.assertTrue(exception.message == "supports only {${UnsupportedRadixForProvisioningUri.PROV_RADIX_VALUE}} radix")
+        Assertions.assertTrue(
+            exception.message == "supports only {${UnsupportedRadixForProvisioningUri.PROV_RADIX_VALUE}} radix"
+        )
     }
 
     @TestFactory

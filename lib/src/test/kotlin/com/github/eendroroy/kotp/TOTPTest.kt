@@ -2,15 +2,10 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.config.TOTPConfig
-import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
+import com.github.eendroroy.kotp.exception.*
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange.Companion.RADIX_VALUE_RANGE
-import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
-import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri.Companion.PROV_DIGEST_VALUEDigest
-import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
-import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri.Companion.PROV_DIGIT_VALUE
-import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedOtpLengthForProvisioningUri.Companion.PROV_LENGTH_VALUE
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri.Companion.PROV_INTERVAL_VALUE
-import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri.Companion.PROV_RADIX_VALUE
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -21,7 +16,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import java.util.Calendar
+import java.util.*
 
 /**
  * @author indrajit
@@ -43,15 +38,15 @@ class TOTPTest {
             listOf<Any>("SECRET", Algorithm.SHA256, 8, 30, 10),
             listOf<Any>("SECRET", Algorithm.SHA512, 12, 60, 16),
             listOf<Any>("SECRET", Algorithm.SHA512, 6, 60, 36),
-        ).map { (secret, digest, digits, interval, radix) ->
+        ).map { (secret, algorithm, digits, interval, radix) ->
             DynamicTest.dynamicTest(
                 "testOtpGeneration: " +
-                    "[Digest: ${digest as Algorithm}], " +
+                    "[Algorithm: ${algorithm as Algorithm}], " +
                     "[Digits: ${digits as Int}], " +
                     "[Interval: ${interval as Int}], " +
                     "[radix: ${radix as Int}]"
             ) {
-                val totp = TOTP(TOTPConfig(secret as String, "KOTP", digits, interval, digest, radix))
+                val totp = TOTP(TOTPConfig(secret as String, "KOTP", digits, interval, algorithm, radix))
                 val totpNow = totp.now()
                 assertNotNull(totpNow)
                 assertNotNull(totp.verify(totpNow, driftBehind = 5))
@@ -96,24 +91,24 @@ class TOTPTest {
 
     @Test
     fun testFailWithUnsupportedDigitsForProvisioningUri() {
-        val totp = TOTP(TOTPConfig("secret", "kotp_lib", digits = 8))
+        val totp = TOTP(TOTPConfig("secret", "kotp_lib", length = 8))
 
-        val exception = assertThrows(UnsupportedDigitsForProvisioningUri::class.java) {
+        val exception = assertThrows(UnsupportedOtpLengthForProvisioningUri::class.java) {
             totp.provisioningUri("kotp")
         }
 
-        assertTrue(exception.message == "supports only {$PROV_DIGIT_VALUE} digits")
+        assertTrue(exception.message == "supports only {$PROV_LENGTH_VALUE} digits")
     }
 
     @Test
-    fun testFailWithUnsupportedDigestForProvisioningUri() {
+    fun testFailWithUnsupportedAlgorithmForProvisioningUri() {
         val totp = TOTP(TOTPConfig("secret", "kotp_lib", algorithm = Algorithm.SHA512))
 
-        val exception = assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
+        val exception = assertThrows(UnsupportedAlgorithmForProvisioningUri::class.java) {
             totp.provisioningUri("kotp")
         }
 
-        assertTrue(exception.message == "supports only {$PROV_DIGEST_VALUEDigest}")
+        assertTrue(exception.message == "supports only {$PROV_LENGTH_VALUE}")
     }
 
     @Test
@@ -178,12 +173,12 @@ class TOTPTest {
                 Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
-        ).map { (seconds, otpStr, digest, seed) ->
+        ).map { (seconds, otpStr, algorithm, seed) ->
             DynamicTest.dynamicTest(
-                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [Digest: ${digest as Algorithm}]"
+                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [Algorithm: ${algorithm as Algorithm}]"
             ) {
                 val interval = 30
-                val totp = TOTP(TOTPConfig(seed as String, "kotp_lib", 8, interval, digest))
+                val totp = TOTP(TOTPConfig(seed as String, "kotp_lib", 8, interval, algorithm))
                 val timeNext = seconds + interval
                 val otp = totp.at(seconds)
                 val otpNext = totp.at(timeNext)

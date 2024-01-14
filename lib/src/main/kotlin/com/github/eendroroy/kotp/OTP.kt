@@ -10,16 +10,16 @@ import javax.crypto.spec.SecretKeySpec
 import kotlin.math.pow
 
 /**
- * @param secret [Secret] secret string
- * @param digits [Int] length of the otp, default: 6
+ * @param secret    [Secret] secret string
+ * @param length    [Int] length of the otp, default: 6
  * @param algorithm [Algorithm] algorithm to use, default: [Algorithm.SHA1]
- * @param radix  [Int] radix/base of the OTP value, default: 10 (decimal)
+ * @param radix     [Int] radix/base of the OTP value, default: 10 (decimal)
  *
  * @author indrajit
  */
 open class OTP(
     private val secret: Secret,
-    private val digits: Int = 6,
+    private val length: Int = 6,
     private val algorithm: Algorithm = Algorithm.SHA1,
     private val radix: Int = 10
 ) {
@@ -50,8 +50,8 @@ open class OTP(
             hMac[offset + 1].toInt().and(0xff).shl(16),
             hMac[offset + 2].toInt().and(0xff).shl(8),
             hMac[offset + 3].toInt().and(0xff)
-        ).reduce(Int::or) % radix.toDouble().pow(digits.toDouble()).toInt()
+        ).reduce(Int::or) % radix.toDouble().pow(length.toDouble()).toInt()
 
-        return String.format("%1$" + digits + "s", code.toString(radix)).uppercase().replace(' ', '0')
+        return String.format("%1$" + length + "s", code.toString(radix)).uppercase().replace(' ', '0')
     }
 }

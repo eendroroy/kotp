@@ -14,7 +14,7 @@ import java.lang.IllegalArgumentException
 class OTPTest {
     @TestFactory
     fun testOtpGenerationUsingDigest(): Collection<DynamicTest?> {
-        return Algorithm.values().map { digest ->
+        return Algorithm.entries.map { digest ->
             DynamicTest.dynamicTest("testOtpGenerationUsing => ${digest.name}") {
                 val otp = OTP(secret = Secret("secret"), algorithm = digest).generateOtp(123L)
                 assertEquals(6, otp.length)
@@ -32,14 +32,14 @@ class OTPTest {
 
     @TestFactory
     fun testGeneratedOtpLengthIsCorrect(): Collection<DynamicTest?> {
-        return listOf(1, 2, 3, 4, 6, 8, 10, 12, 24).map { len ->
-            DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $len") {
-                val otp1 = OTP(secret = Secret("secret"), digits = len).generateOtp(123L)
-                assertEquals(len, otp1.length)
-                val otp2 = OTP(secret = Secret("secret"), digits = len, radix = 16).generateOtp(123L)
-                assertEquals(len, otp2.length)
-                val otp3 = OTP(secret = Secret("secret"), digits = len, radix = 36).generateOtp(123L)
-                assertEquals(len, otp3.length)
+        return listOf(1, 2, 3, 4, 6, 8, 10, 12, 24).map { length ->
+            DynamicTest.dynamicTest("testGeneratedOtpLengthIsCorrect => $length") {
+                val otp1 = OTP(secret = Secret("secret"), length = length).generateOtp(123L)
+                assertEquals(length, otp1.length)
+                val otp2 = OTP(secret = Secret("secret"), length = length, radix = 16).generateOtp(123L)
+                assertEquals(length, otp2.length)
+                val otp3 = OTP(secret = Secret("secret"), length = length, radix = 36).generateOtp(123L)
+                assertEquals(length, otp3.length)
             }
         }
     }
@@ -57,8 +57,10 @@ class OTPTest {
             listOf<Any>(9999L, "00GRK4F3", 36),
             listOf<Any>(123456789L, "00TQIHYE", 36),
         ).map { item ->
-            DynamicTest.dynamicTest("testGeneratedOtpAgainstSample => generateOtp(${item[0] as Long}): ${item[1] as String}") {
-                val otp = OTP(secret = Secret("secret"), digits = 8, radix = item[2] as Int)
+            DynamicTest.dynamicTest(
+                "testGeneratedOtpAgainstSample => generateOtp(${item[0] as Long}): ${item[1] as String}"
+            ) {
+                val otp = OTP(secret = Secret("secret"), length = 8, radix = item[2] as Int)
                     .generateOtp(item[0] as Long)
                 assertEquals(item[1] as String, otp)
             }

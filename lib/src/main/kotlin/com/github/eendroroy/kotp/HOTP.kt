@@ -1,8 +1,8 @@
 package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.config.HOTPConfig
-import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
-import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedAlgorithmForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedOtpLengthForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import java.net.URLEncoder
 import java.nio.charset.Charset
@@ -12,24 +12,31 @@ import java.nio.charset.Charset
  *
  * @constructor
  *
- * @param conf OTP properties
+ * @param configuration OTP properties
  *
  * @since 0.1.2
  *
  * @author indrajit
  */
-class HOTP constructor(private val conf: HOTPConfig) : OTP(conf.secret, conf.digits, conf.algorithm, conf.radix) {
+class HOTP(
+    private val configuration: HOTPConfig
+) : OTP(
+    configuration.secret,
+    configuration.length,
+    configuration.algorithm,
+    configuration.radix
+) {
 
     /**
      * Generates OTP at provided counter
      *
-     * @param count count of OTP
+     * @param counter count of OTP
      * @return generated OTP
      *
      * @since 0.1.3
      */
-    fun at(count: Long): String {
-        return generateOtp(count)
+    fun at(counter: Long): String {
+        return generateOtp(counter)
     }
 
     /**
@@ -60,12 +67,12 @@ class HOTP constructor(private val conf: HOTPConfig) : OTP(conf.secret, conf.dig
      * @since 1.0.0
      */
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
-        UnsupportedDigitsForProvisioningUri.passOrThrow(conf.digits)
-        UnsupportedDigestForProvisioningUri.passOrThrow(conf.algorithm)
-        UnsupportedRadixForProvisioningUri.passOrThrow(conf.radix)
+        UnsupportedOtpLengthForProvisioningUri.passOrThrow(configuration.length)
+        UnsupportedAlgorithmForProvisioningUri.passOrThrow(configuration.algorithm)
+        UnsupportedRadixForProvisioningUri.passOrThrow(configuration.radix)
 
         val query = listOf(
-            "secret=${encode(conf.secret.encodedString())}",
+            "secret=${encode(configuration.secret.encodedString())}",
             "&counter=${encode(initialCount.toString())}",
         ).joinToString("")
 

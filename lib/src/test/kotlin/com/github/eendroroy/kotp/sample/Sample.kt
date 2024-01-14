@@ -37,7 +37,7 @@ fun main() {
 }
 
 fun hotpDemo(secret: String, digits: Int, algorithm: Algorithm, radix: Int) {
-    val config = HOTPConfig(secret = secret, digits = digits, algorithm = algorithm, radix = radix)
+    val config = HOTPConfig(secret = secret, length = digits, algorithm = algorithm, radix = radix)
     val hotp = HOTP(config)
     val counter = System.currentTimeMillis() / 1_000
 
@@ -55,11 +55,11 @@ fun hotpDemo(secret: String, digits: Int, algorithm: Algorithm, radix: Int) {
     println("$counter  ==>  $otp  <>  ${counter == verify}")
 }
 
-fun totpDemo(secret: String, digits: Int, interval: Int, algorithm: Algorithm, radix: Int) {
+fun totpDemo(secret: String, length: Int, interval: Int, algorithm: Algorithm, radix: Int) {
     val config = TOTPConfig(
         secret = secret,
         issuer = "kotp_lib",
-        digits = digits,
+        length = length,
         interval = interval,
         algorithm = algorithm,
         radix = radix
@@ -80,7 +80,7 @@ fun totpDemo(secret: String, digits: Int, interval: Int, algorithm: Algorithm, r
     } catch (ex: RuntimeException) {
         println(ex.localizedMessage)
     }
-    println("$digits <> $algorithm <> $radix")
+    println("$length <> $algorithm <> $radix")
     println("$seconds  ==>  $otp  <>  ${verify != null}")
     println("NOW         ==>  $otpNow  <>  ${verifyNow != null}")
 }

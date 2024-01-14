@@ -1,7 +1,13 @@
 # 1.0.2
 
 - Added `Algorithm`
-- `[Braking change]` Deprecated `Digest`, Use `Algorithm`
+- `[Braking change]` Deprecated `Digest` (Use `Algorithm`)
+- `[Braking change]` Renamed `UnsupportedDigitsForProvisioningUri` to `UnsupportedOtpLengthForProvisioningUri`
+- `[Braking change]` Renamed `UnsupportedDigestForProvisioningUri` to `UnsupportedAlgorithmForProvisioningUri`
+- Renamed `digits` to `length`
+- Renamed `conf` to `configuration` in `TOPT` and `HOTP` constructors
+- Renamed `time` parameter to `epochSeconds` in `TOPT.at(Long): String`
+- Renamed `count` parameter to `counter` in `HOPT.at(Long): String`
 
 # 1.0.1
 

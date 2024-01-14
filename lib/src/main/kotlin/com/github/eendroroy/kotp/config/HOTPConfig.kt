@@ -7,7 +7,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
  * HOTP Configurations
  *
  * @param secret    [Secret]
- * @param digits    length of the otp, default: 6
+ * @param length    length of the otp, default: 6
  * @param algorithm algorithm to use, default: [Algorithm.SHA1]
  * @param radix     radix/base of the OTP value, default: 10 (decimal)
  *
@@ -17,7 +17,7 @@ import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
  */
 data class HOTPConfig(
     val secret: Secret,
-    val digits: Int = 6,
+    val length: Int = 6,
     val algorithm: Algorithm = Algorithm.SHA1,
     val radix: Int = 10
 ) {
@@ -27,7 +27,7 @@ data class HOTPConfig(
 
     /**
      * @param secret    plain secret string
-     * @param digits    length of the otp, default: 6
+     * @param length    length of the otp, default: 6
      * @param algorithm algorithm to use, default: [Algorithm.SHA1]
      * @param radix     radix/base of the OTP value, default: 10 (decimal)
      *
@@ -35,7 +35,7 @@ data class HOTPConfig(
      *
      * @since 1.0.1
      */
-    constructor(secret: String, digits: Int = 6, algorithm: Algorithm = Algorithm.SHA1, radix: Int = 10) : this(
-        Secret(secret), digits, algorithm, radix
+    constructor(secret: String, length: Int = 6, algorithm: Algorithm = Algorithm.SHA1, radix: Int = 10) : this(
+        Secret(secret), length, algorithm, radix
     )
 }

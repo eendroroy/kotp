@@ -1,8 +1,8 @@
 package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.config.TOTPConfig
-import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
-import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedAlgorithmForProvisioningUri
+import com.github.eendroroy.kotp.exception.UnsupportedOtpLengthForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
 import com.github.eendroroy.kotp.extensions.currentSeconds
@@ -14,25 +14,32 @@ import java.nio.charset.Charset
  *
  * @constructor
  *
- * @param conf OTP properties
+ * @param configuration OTP properties
  *
  * @since 0.1.2
  *
  * @author indrajit
  */
-class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.algorithm, conf.radix) {
-    private fun timeCode(second: Long): Long = second / conf.interval
+class TOTP(
+    private val configuration: TOTPConfig
+) : OTP(
+    configuration.secret,
+    configuration.length,
+    configuration.algorithm,
+    configuration.radix
+) {
+    private fun timeCode(second: Long): Long = second / configuration.interval
 
     /**
      * Generates OTP at provided epoch seconds [Long]
      *
-     * @param time epoch seconds
+     * @param epochSeconds epoch seconds
      * @return generated OTP
      *
      * @since 1.0.1
      */
-    fun at(time: Long): String {
-        return generateOtp(timeCode(time))
+    fun at(epochSeconds: Long): String {
+        return generateOtp(timeCode(epochSeconds))
     }
 
     /**
@@ -71,7 +78,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.al
         var start = timeCode(at - driftBehind)
         after?.let { timeCode(it) }?.run { if (start < this) start = this }
         val end = timeCode(at + driftAhead)
-        (start..end).forEach { if (otp == generateOtp(it)) return it * conf.interval }
+        (start..end).forEach { if (otp == generateOtp(it)) return it * configuration.interval }
         return null
     }
 
@@ -86,16 +93,16 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.al
      * @since 1.0.0
      */
     fun provisioningUri(name: String): String {
-        UnsupportedIntervalForProvisioningUri.passOrThrow(conf.interval)
-        UnsupportedDigitsForProvisioningUri.passOrThrow(conf.digits)
-        UnsupportedDigestForProvisioningUri.passOrThrow(conf.algorithm)
-        UnsupportedRadixForProvisioningUri.passOrThrow(conf.radix)
+        UnsupportedIntervalForProvisioningUri.passOrThrow(configuration.interval)
+        UnsupportedOtpLengthForProvisioningUri.passOrThrow(configuration.length)
+        UnsupportedAlgorithmForProvisioningUri.passOrThrow(configuration.algorithm)
+        UnsupportedRadixForProvisioningUri.passOrThrow(configuration.radix)
 
-        val issuerStr = if (conf.issuer.isNotEmpty()) "${encode(conf.issuer)}:" else ""
+        val issuerStr = if (configuration.issuer.isNotEmpty()) "${encode(configuration.issuer)}:" else ""
 
         val query = listOf(
-            "secret=${encode(conf.secret.encodedString())}",
-            "&issuer=${encode(conf.issuer)}"
+            "secret=${encode(configuration.secret.encodedString())}",
+            "&issuer=${encode(configuration.issuer)}"
         ).joinToString("")
 
         return "otpauth://totp/${issuerStr}${encode(name)}?$query"
