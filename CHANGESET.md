@@ -1,3 +1,8 @@
+# 1.0.2
+
+- Added `Algorithm`
+- `[Braking change]` Deprecated `Digest`, Use `Algorithm`
+
 # 1.0.1
 
 - Added `TOTP.at(Long): String`

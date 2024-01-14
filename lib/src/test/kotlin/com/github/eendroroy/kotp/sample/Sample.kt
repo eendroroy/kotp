@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp.sample
 
-import com.github.eendroroy.kotp.Digest
+import com.github.eendroroy.kotp.Algorithm
 import com.github.eendroroy.kotp.HOTP
 import com.github.eendroroy.kotp.TOTP
 import com.github.eendroroy.kotp.config.HOTPConfig
@@ -14,30 +14,30 @@ import java.util.Calendar
 const val secret = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 fun main() {
-    hotpDemo(secret, 6, Digest.SHA1, 10)
-    hotpDemo(secret, 8, Digest.SHA1, 10)
-    hotpDemo(secret, 8, Digest.SHA256, 10)
-    hotpDemo(secret, 8, Digest.SHA512, 10)
-    hotpDemo(secret, 8, Digest.SHA1, 16)
-    hotpDemo(secret, 8, Digest.SHA256, 16)
-    hotpDemo(secret, 8, Digest.SHA512, 16)
-    hotpDemo(secret, 8, Digest.SHA1, 36)
-    hotpDemo(secret, 8, Digest.SHA256, 36)
-    hotpDemo(secret, 8, Digest.SHA512, 36)
-    totpDemo(secret, 6, 30, Digest.SHA1, 10)
-    totpDemo(secret, 8, 30, Digest.SHA1, 10)
-    totpDemo(secret, 8, 30, Digest.SHA256, 10)
-    totpDemo(secret, 8, 30, Digest.SHA512, 10)
-    totpDemo(secret, 8, 30, Digest.SHA1, 16)
-    totpDemo(secret, 8, 30, Digest.SHA256, 16)
-    totpDemo(secret, 8, 30, Digest.SHA512, 16)
-    totpDemo(secret, 8, 30, Digest.SHA1, 36)
-    totpDemo(secret, 8, 30, Digest.SHA256, 36)
-    totpDemo(secret, 8, 30, Digest.SHA512, 36)
+    hotpDemo(secret, 6, Algorithm.SHA1, 10)
+    hotpDemo(secret, 8, Algorithm.SHA1, 10)
+    hotpDemo(secret, 8, Algorithm.SHA256, 10)
+    hotpDemo(secret, 8, Algorithm.SHA512, 10)
+    hotpDemo(secret, 8, Algorithm.SHA1, 16)
+    hotpDemo(secret, 8, Algorithm.SHA256, 16)
+    hotpDemo(secret, 8, Algorithm.SHA512, 16)
+    hotpDemo(secret, 8, Algorithm.SHA1, 36)
+    hotpDemo(secret, 8, Algorithm.SHA256, 36)
+    hotpDemo(secret, 8, Algorithm.SHA512, 36)
+    totpDemo(secret, 6, 30, Algorithm.SHA1, 10)
+    totpDemo(secret, 8, 30, Algorithm.SHA1, 10)
+    totpDemo(secret, 8, 30, Algorithm.SHA256, 10)
+    totpDemo(secret, 8, 30, Algorithm.SHA512, 10)
+    totpDemo(secret, 8, 30, Algorithm.SHA1, 16)
+    totpDemo(secret, 8, 30, Algorithm.SHA256, 16)
+    totpDemo(secret, 8, 30, Algorithm.SHA512, 16)
+    totpDemo(secret, 8, 30, Algorithm.SHA1, 36)
+    totpDemo(secret, 8, 30, Algorithm.SHA256, 36)
+    totpDemo(secret, 8, 30, Algorithm.SHA512, 36)
 }
 
-fun hotpDemo(secret: String, digits: Int, digest: Digest, radix: Int) {
-    val config = HOTPConfig(secret = secret, digits = digits, digest = digest, radix = radix)
+fun hotpDemo(secret: String, digits: Int, algorithm: Algorithm, radix: Int) {
+    val config = HOTPConfig(secret = secret, digits = digits, algorithm = algorithm, radix = radix)
     val hotp = HOTP(config)
     val counter = System.currentTimeMillis() / 1_000
 
@@ -51,17 +51,17 @@ fun hotpDemo(secret: String, digits: Int, digest: Digest, radix: Int) {
     } catch (ex: RuntimeException) {
         println(ex.localizedMessage)
     }
-    println("$digits <> $digest <> $radix")
+    println("$digits <> $algorithm <> $radix")
     println("$counter  ==>  $otp  <>  ${counter == verify}")
 }
 
-fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, radix: Int) {
+fun totpDemo(secret: String, digits: Int, interval: Int, algorithm: Algorithm, radix: Int) {
     val config = TOTPConfig(
         secret = secret,
         issuer = "kotp_lib",
         digits = digits,
         interval = interval,
-        digest = digest,
+        algorithm = algorithm,
         radix = radix
     )
     val totp = TOTP(config)
@@ -80,7 +80,7 @@ fun totpDemo(secret: String, digits: Int, interval: Int, digest: Digest, radix: 
     } catch (ex: RuntimeException) {
         println(ex.localizedMessage)
     }
-    println("$digits <> $digest <> $radix")
+    println("$digits <> $algorithm <> $radix")
     println("$seconds  ==>  $otp  <>  ${verify != null}")
     println("NOW         ==>  $otpNow  <>  ${verifyNow != null}")
 }

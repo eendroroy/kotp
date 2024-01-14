@@ -20,7 +20,7 @@ import java.nio.charset.Charset
  *
  * @author indrajit
  */
-class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.digest, conf.radix) {
+class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.algorithm, conf.radix) {
     private fun timeCode(second: Long): Long = second / conf.interval
 
     /**
@@ -88,7 +88,7 @@ class TOTP(private val conf: TOTPConfig) : OTP(conf.secret, conf.digits, conf.di
     fun provisioningUri(name: String): String {
         UnsupportedIntervalForProvisioningUri.passOrThrow(conf.interval)
         UnsupportedDigitsForProvisioningUri.passOrThrow(conf.digits)
-        UnsupportedDigestForProvisioningUri.passOrThrow(conf.digest)
+        UnsupportedDigestForProvisioningUri.passOrThrow(conf.algorithm)
         UnsupportedRadixForProvisioningUri.passOrThrow(conf.radix)
 
         val issuerStr = if (conf.issuer.isNotEmpty()) "${encode(conf.issuer)}:" else ""

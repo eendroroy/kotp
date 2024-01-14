@@ -3,15 +3,10 @@ package com.github.eendroroy.kotp
 /**
  * Supported digest algorithms
  *
- * @since 0.1.1
+ * @since 1.0.2
  * @author indrajit
  */
-@Deprecated(
-    message = "\"Digest\" is deprecated, use \"Algorithm\" instead",
-    replaceWith = ReplaceWith("Algorithm", "com.github.eendroroy.kotp.Algorithm"),
-    level = DeprecationLevel.ERROR
-)
-enum class Digest constructor(private val digestName: String) {
+enum class Algorithm(private val algorithmName: String) {
     /**
      * HmacSHA1
      * @name SHA1
@@ -39,6 +34,6 @@ enum class Digest constructor(private val digestName: String) {
      * @return Digest name
      */
     override fun toString(): String {
-        return this.digestName
+        return this.algorithmName
     }
 }

@@ -12,7 +12,7 @@ import kotlin.math.pow
 /**
  * @param secret [Secret] secret string
  * @param digits [Int] length of the otp, default: 6
- * @param digest [Digest] algorithm to use, default: [Digest.SHA1]
+ * @param algorithm [Algorithm] algorithm to use, default: [Algorithm.SHA1]
  * @param radix  [Int] radix/base of the OTP value, default: 10 (decimal)
  *
  * @author indrajit
@@ -20,7 +20,7 @@ import kotlin.math.pow
 open class OTP(
     private val secret: Secret,
     private val digits: Int = 6,
-    private val digest: Digest = Digest.SHA1,
+    private val algorithm: Algorithm = Algorithm.SHA1,
     private val radix: Int = 10
 ) {
     init {
@@ -38,8 +38,8 @@ open class OTP(
      */
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     fun generateOtp(input: Long): String {
-        val hMac = Mac.getInstance(digest.toString()).let {
-            it.init(SecretKeySpec(secret.decoded(), digest.toString()))
+        val hMac = Mac.getInstance(algorithm.toString()).let {
+            it.init(SecretKeySpec(secret.decoded(), algorithm.toString()))
             it.doFinal(input.toByteArray())
         }
 

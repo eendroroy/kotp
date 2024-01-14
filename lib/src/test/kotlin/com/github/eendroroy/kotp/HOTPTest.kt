@@ -40,14 +40,14 @@ class HOTPTest {
     @TestFactory
     fun testOtpGeneration(): Collection<DynamicTest?> {
         return listOf(
-            listOf<Any>("SECRET", Digest.SHA1, 6, 30, 10),
-            listOf<Any>("SECRET", Digest.SHA256, 8, 30, 10),
-            listOf<Any>("SECRET", Digest.SHA512, 12, 60, 16),
-            listOf<Any>("SECRET", Digest.SHA512, 6, 60, 36),
+            listOf<Any>("SECRET", Algorithm.SHA1, 6, 30, 10),
+            listOf<Any>("SECRET", Algorithm.SHA256, 8, 30, 10),
+            listOf<Any>("SECRET", Algorithm.SHA512, 12, 60, 16),
+            listOf<Any>("SECRET", Algorithm.SHA512, 6, 60, 36),
         ).map { (secret, digest, digits, interval, radix) ->
             DynamicTest.dynamicTest(
                 "testOtpGeneration: " +
-                    "[Digest: ${digest as Digest}], " +
+                    "[Digest: ${digest as Algorithm}], " +
                     "[Digits: ${digits as Int}], " +
                     "[Interval: ${interval as Int}], " +
                     "[radix: ${radix as Int}]"
@@ -66,7 +66,7 @@ class HOTPTest {
 
     @Test
     fun testPassProvisioningUri() {
-        val uri = HOTP(HOTPConfig("secret", digits = 6, digest = Digest.SHA1, radix = 10)).provisioningUri("kotp")
+        val uri = HOTP(HOTPConfig("secret", digits = 6, algorithm = Algorithm.SHA1, radix = 10)).provisioningUri("kotp")
         assertEquals("otpauth://hotp/kotp?secret=ONSWG4TFOQ&counter=0", uri)
     }
 
@@ -83,7 +83,7 @@ class HOTPTest {
 
     @Test
     fun testFailWithUnsupportedDigestForProvisioningUri() {
-        val hotp = HOTP(HOTPConfig("secret", digest = Digest.SHA512))
+        val hotp = HOTP(HOTPConfig("secret", algorithm = Algorithm.SHA512))
 
         val exception = Assertions.assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
             hotp.provisioningUri("kotp")

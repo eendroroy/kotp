@@ -18,7 +18,7 @@ import java.nio.charset.Charset
  *
  * @author indrajit
  */
-class HOTP constructor(private val conf: HOTPConfig) : OTP(conf.secret, conf.digits, conf.digest, conf.radix) {
+class HOTP constructor(private val conf: HOTPConfig) : OTP(conf.secret, conf.digits, conf.algorithm, conf.radix) {
 
     /**
      * Generates OTP at provided counter
@@ -61,7 +61,7 @@ class HOTP constructor(private val conf: HOTPConfig) : OTP(conf.secret, conf.dig
      */
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
         UnsupportedDigitsForProvisioningUri.passOrThrow(conf.digits)
-        UnsupportedDigestForProvisioningUri.passOrThrow(conf.digest)
+        UnsupportedDigestForProvisioningUri.passOrThrow(conf.algorithm)
         UnsupportedRadixForProvisioningUri.passOrThrow(conf.radix)
 
         val query = listOf(

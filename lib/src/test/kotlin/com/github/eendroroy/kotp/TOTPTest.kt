@@ -39,14 +39,14 @@ class TOTPTest {
     @TestFactory
     fun testOtpGeneration(): Collection<DynamicTest?> {
         return listOf(
-            listOf<Any>("SECRET", Digest.SHA1, 6, 30, 10),
-            listOf<Any>("SECRET", Digest.SHA256, 8, 30, 10),
-            listOf<Any>("SECRET", Digest.SHA512, 12, 60, 16),
-            listOf<Any>("SECRET", Digest.SHA512, 6, 60, 36),
+            listOf<Any>("SECRET", Algorithm.SHA1, 6, 30, 10),
+            listOf<Any>("SECRET", Algorithm.SHA256, 8, 30, 10),
+            listOf<Any>("SECRET", Algorithm.SHA512, 12, 60, 16),
+            listOf<Any>("SECRET", Algorithm.SHA512, 6, 60, 36),
         ).map { (secret, digest, digits, interval, radix) ->
             DynamicTest.dynamicTest(
                 "testOtpGeneration: " +
-                    "[Digest: ${digest as Digest}], " +
+                    "[Digest: ${digest as Algorithm}], " +
                     "[Digits: ${digits as Int}], " +
                     "[Interval: ${interval as Int}], " +
                     "[radix: ${radix as Int}]"
@@ -107,7 +107,7 @@ class TOTPTest {
 
     @Test
     fun testFailWithUnsupportedDigestForProvisioningUri() {
-        val totp = TOTP(TOTPConfig("secret", "kotp_lib", digest = Digest.SHA512))
+        val totp = TOTP(TOTPConfig("secret", "kotp_lib", algorithm = Algorithm.SHA512))
 
         val exception = assertThrows(UnsupportedDigestForProvisioningUri::class.java) {
             totp.provisioningUri("kotp")
@@ -130,57 +130,57 @@ class TOTPTest {
     @TestFactory
     fun testGeneratedOtpAgainstRFCSample(): Collection<DynamicTest?> {
         return listOf(
-            listOf<Any>(59L, "94287082", Digest.SHA1, "12345678901234567890"),
-            listOf<Any>(59L, "46119246", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(59L, "94287082", Algorithm.SHA1, "12345678901234567890"),
+            listOf<Any>(59L, "46119246", Algorithm.SHA256, "12345678901234567890123456789012"),
             listOf<Any>(
                 59L,
                 "90693936",
-                Digest.SHA512,
+                Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
-            listOf<Any>(1111111109L, "07081804", Digest.SHA1, "12345678901234567890"),
-            listOf<Any>(1111111109L, "68084774", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(1111111109L, "07081804", Algorithm.SHA1, "12345678901234567890"),
+            listOf<Any>(1111111109L, "68084774", Algorithm.SHA256, "12345678901234567890123456789012"),
             listOf<Any>(
                 1111111109L,
                 "25091201",
-                Digest.SHA512,
+                Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
-            listOf<Any>(1111111111L, "14050471", Digest.SHA1, "12345678901234567890"),
-            listOf<Any>(1111111111L, "67062674", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(1111111111L, "14050471", Algorithm.SHA1, "12345678901234567890"),
+            listOf<Any>(1111111111L, "67062674", Algorithm.SHA256, "12345678901234567890123456789012"),
             listOf<Any>(
                 1111111111L,
                 "99943326",
-                Digest.SHA512,
+                Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
-            listOf<Any>(1234567890L, "89005924", Digest.SHA1, "12345678901234567890"),
-            listOf<Any>(1234567890L, "91819424", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(1234567890L, "89005924", Algorithm.SHA1, "12345678901234567890"),
+            listOf<Any>(1234567890L, "91819424", Algorithm.SHA256, "12345678901234567890123456789012"),
             listOf<Any>(
                 1234567890L,
                 "93441116",
-                Digest.SHA512,
+                Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
-            listOf<Any>(2000000000L, "69279037", Digest.SHA1, "12345678901234567890"),
-            listOf<Any>(2000000000L, "90698825", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(2000000000L, "69279037", Algorithm.SHA1, "12345678901234567890"),
+            listOf<Any>(2000000000L, "90698825", Algorithm.SHA256, "12345678901234567890123456789012"),
             listOf<Any>(
                 2000000000L,
                 "38618901",
-                Digest.SHA512,
+                Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
-            listOf<Any>(20000000000L, "65353130", Digest.SHA1, "12345678901234567890"),
-            listOf<Any>(20000000000L, "77737706", Digest.SHA256, "12345678901234567890123456789012"),
+            listOf<Any>(20000000000L, "65353130", Algorithm.SHA1, "12345678901234567890"),
+            listOf<Any>(20000000000L, "77737706", Algorithm.SHA256, "12345678901234567890123456789012"),
             listOf<Any>(
                 20000000000L,
                 "47863826",
-                Digest.SHA512,
+                Algorithm.SHA512,
                 "1234567890123456789012345678901234567890123456789012345678901234"
             ),
         ).map { (seconds, otpStr, digest, seed) ->
             DynamicTest.dynamicTest(
-                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [Digest: ${digest as Digest}]"
+                "testGeneratedOtpAgainstSample => at(${seconds as Long}): $otpStr [Digest: ${digest as Algorithm}]"
             ) {
                 val interval = 30
                 val totp = TOTP(TOTPConfig(seed as String, "kotp_lib", 8, interval, digest))

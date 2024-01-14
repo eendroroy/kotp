@@ -1,6 +1,6 @@
 package com.github.eendroroy.kotp.exception
 
-import com.github.eendroroy.kotp.Digest
+import com.github.eendroroy.kotp.Algorithm
 import java.lang.RuntimeException
 
 /**
@@ -8,12 +8,12 @@ import java.lang.RuntimeException
  *
  * @since 1.0.0
  */
-class UnsupportedDigestForProvisioningUri : RuntimeException("supports only {$PROV_DIGEST_VALUE}") {
+class UnsupportedDigestForProvisioningUri : RuntimeException("supports only {$PROV_Algorithm_VALUE}") {
     companion object {
-        val PROV_DIGEST_VALUE = Digest.SHA1
+        val PROV_Algorithm_VALUE = Algorithm.SHA1
 
-        fun passOrThrow(value: Digest) {
-            if (PROV_DIGEST_VALUE != value) throw UnsupportedDigestForProvisioningUri()
+        fun passOrThrow(value: Algorithm) {
+            if (PROV_Algorithm_VALUE != value) throw UnsupportedDigestForProvisioningUri()
         }
     }
 }
