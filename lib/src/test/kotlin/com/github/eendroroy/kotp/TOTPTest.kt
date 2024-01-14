@@ -4,6 +4,7 @@ import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.config.TOTPConfig
 import com.github.eendroroy.kotp.exception.*
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange.Companion.RADIX_VALUE_RANGE
+import com.github.eendroroy.kotp.exception.UnsupportedAlgorithmForProvisioningUri.Companion.PROV_ALGORITHM_VALUE
 import com.github.eendroroy.kotp.exception.UnsupportedOtpLengthForProvisioningUri.Companion.PROV_LENGTH_VALUE
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri.Companion.PROV_INTERVAL_VALUE
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri.Companion.PROV_RADIX_VALUE
@@ -108,7 +109,7 @@ class TOTPTest {
             totp.provisioningUri("kotp")
         }
 
-        assertTrue(exception.message == "supports only {$PROV_LENGTH_VALUE}")
+        assertTrue(exception.message == "supports only {${PROV_ALGORITHM_VALUE}}")
     }
 
     @Test
