@@ -5,7 +5,7 @@ import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
-import com.github.eendroroy.kotp.helper.currentSeconds
+import com.github.eendroroy.kotp.extensions.currentSeconds
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -89,7 +89,7 @@ class HOTPTest {
             hotp.provisioningUri("kotp")
         }
 
-        Assertions.assertTrue(exception.message == "supports only {${UnsupportedDigestForProvisioningUri.PROV_DIGEST_VALUE}}")
+        Assertions.assertTrue(exception.message == "supports only {${UnsupportedDigestForProvisioningUri.PROV_DIGEST_VALUEDigest}}")
     }
 
     @Test

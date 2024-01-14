@@ -1,6 +1,4 @@
-package com.github.eendroroy.kotp.helper
-
-import java.util.LinkedList
+package com.github.eendroroy.kotp.extensions
 
 /**
  * @author indrajit

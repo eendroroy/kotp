@@ -5,7 +5,7 @@ import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedRadixForProvisioningUri
-import com.github.eendroroy.kotp.helper.currentSeconds
+import com.github.eendroroy.kotp.extensions.currentSeconds
 import java.net.URLEncoder
 import java.nio.charset.Charset
 

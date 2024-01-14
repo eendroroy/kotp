@@ -2,7 +2,7 @@ package com.github.eendroroy.kotp
 
 import com.github.eendroroy.kotp.config.Secret
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
-import com.github.eendroroy.kotp.helper.toByteArray
+import com.github.eendroroy.kotp.extensions.toByteArray
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import javax.crypto.Mac

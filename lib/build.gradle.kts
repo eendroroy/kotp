@@ -1,14 +1,12 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    java
+    `java-library`
     `maven-publish`
     signing
     jacoco
 
-    kotlin("jvm") version "1.5.21"
-    id("com.adarshr.test-logger") version "3.0.0"
-    id("org.jetbrains.dokka") version "1.4.32"
+    kotlin("jvm") version "1.9.22"
+    id("com.adarshr.test-logger") version "4.0.0"
+    id("org.jetbrains.dokka") version "1.9.10"
 }
 
 repositories {
@@ -39,21 +37,15 @@ java {
     withJavadocJar()
 }
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
+kotlin { jvmToolchain(8) }
+
+tasks.named<Jar>("javadocJar") {
+    from(tasks.named("dokkaJavadoc"))
 }
 
 tasks {
     dokkaJavadoc {
-        outputDirectory.set(file("$buildDir/docs"))
-    }
-
-    javadoc {
-        dependsOn(dokkaJavadoc)
+        outputDirectory.set(file(layout.buildDirectory.dir("docs")))
     }
 }
 
@@ -78,6 +70,7 @@ tasks.jacocoTestReport {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
+            artifactId = "kotp"
             from(components["java"])
 
             pom {

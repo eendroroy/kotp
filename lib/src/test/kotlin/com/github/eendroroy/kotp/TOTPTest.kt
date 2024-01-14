@@ -5,7 +5,7 @@ import com.github.eendroroy.kotp.config.TOTPConfig
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange
 import com.github.eendroroy.kotp.exception.RadixValueOutOfRange.Companion.RADIX_VALUE_RANGE
 import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri
-import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri.Companion.PROV_DIGEST_VALUE
+import com.github.eendroroy.kotp.exception.UnsupportedDigestForProvisioningUri.Companion.PROV_DIGEST_VALUEDigest
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri
 import com.github.eendroroy.kotp.exception.UnsupportedDigitsForProvisioningUri.Companion.PROV_DIGIT_VALUE
 import com.github.eendroroy.kotp.exception.UnsupportedIntervalForProvisioningUri
@@ -113,7 +113,7 @@ class TOTPTest {
             totp.provisioningUri("kotp")
         }
 
-        assertTrue(exception.message == "supports only {$PROV_DIGEST_VALUE}")
+        assertTrue(exception.message == "supports only {$PROV_DIGEST_VALUEDigest}")
     }
 
     @Test
