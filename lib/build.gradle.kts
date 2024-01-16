@@ -19,8 +19,8 @@ buildscript {
     }
 }
 
-group = "com.github.eendroroy"
-version = "1.0.2"
+group = "io.github.eendroroy"
+version = "2.0.0"
 val isReleaseVersion = !"$version".endsWith("SNAPSHOT")
 
 dependencies {

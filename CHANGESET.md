@@ -1,3 +1,7 @@
+# 2.0.0
+
+- Moved from `com.github.eendroroy` to `io.github.eendroroy`
+
 # 1.0.2
 
 - Added `Algorithm`

@@ -30,9 +30,9 @@ OTP generation and validation library.
 ```xml
 
 <dependency>
-    <groupId>com.github.eendroroy</groupId>
+    <groupId>io.github.eendroroy</groupId>
     <artifactId>kotp</artifactId>
-    <version>1.0.2</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ OTP generation and validation library.
 
 ```groovy
 dependencies {
-    implementation("com.github.eendroroy:kotp:1.0.2")
+    implementation("io.github.eendroroy:kotp:2.0.0")
 }
 ```
 
