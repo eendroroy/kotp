@@ -15,7 +15,7 @@ import io.github.eendroroy.kotp.exception.RadixValueOutOfRange
  *
  * @since 1.0.1
  */
-data class HOTPConfig(
+data class HOTPConfig @JvmOverloads constructor(
     val secret: Secret,
     val length: Int = 6,
     val algorithm: Algorithm = Algorithm.SHA1,
@@ -35,6 +35,7 @@ data class HOTPConfig(
      *
      * @since 1.0.1
      */
+    @JvmOverloads
     constructor(secret: String, length: Int = 6, algorithm: Algorithm = Algorithm.SHA1, radix: Int = 10) : this(
         Secret(secret), length, algorithm, radix
     )

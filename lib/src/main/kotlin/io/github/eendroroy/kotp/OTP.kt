@@ -17,7 +17,7 @@ import kotlin.math.pow
  *
  * @author indrajit
  */
-open class OTP(
+open class OTP @JvmOverloads constructor(
     private val secret: Secret,
     private val length: Int = 6,
     private val algorithm: Algorithm = Algorithm.SHA1,

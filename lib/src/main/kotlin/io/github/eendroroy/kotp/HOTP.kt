@@ -50,6 +50,7 @@ class HOTP(
      *
      * @since 0.1.3
      */
+    @JvmOverloads
     fun verify(otp: String, counter: Long, retries: Long = 0): Long? {
         (counter..(counter + retries)).forEach { if (otp == at(it)) return it }
         return null
@@ -66,6 +67,7 @@ class HOTP(
      *
      * @since 1.0.0
      */
+    @JvmOverloads
     fun provisioningUri(name: String, initialCount: Long = 0L): String {
         UnsupportedOtpLengthForProvisioningUri.passOrThrow(configuration.length)
         UnsupportedAlgorithmForProvisioningUri.passOrThrow(configuration.algorithm)

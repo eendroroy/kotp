@@ -1,3 +1,7 @@
+# 2.0.2
+
+- Added java support (experimental)
+
 # 2.0.1
 
 - Minimum supported kotlin version `1.6.0`

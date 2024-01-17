@@ -17,7 +17,7 @@ import io.github.eendroroy.kotp.exception.RadixValueOutOfRange
  *
  * @since 1.0.1
  */
-data class TOTPConfig(
+data class TOTPConfig @JvmOverloads constructor(
     val secret: Secret,
     val issuer: String,
     val length: Int = 6,
@@ -41,6 +41,7 @@ data class TOTPConfig(
      *
      * @since 0.1.2
      */
+    @JvmOverloads
     constructor(
         secret: String,
         issuer: String,

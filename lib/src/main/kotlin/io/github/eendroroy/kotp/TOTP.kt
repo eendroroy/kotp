@@ -68,6 +68,7 @@ class TOTP(
      *
      * @since 1.0.1
      */
+    @JvmOverloads
     fun verify(
         otp: String,
         at: Long = currentSeconds(),

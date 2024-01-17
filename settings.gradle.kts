@@ -1,2 +1,3 @@
 rootProject.name = "kotp"
-include("lib")
+include(":kotp")
+project(":kotp").projectDir = file("lib/")
