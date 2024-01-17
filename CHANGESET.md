@@ -1,3 +1,7 @@
+# 2.0.1
+
+- Minimum supported kotlin version `1.6.0`
+
 # 2.0.0
 
 - Moved from `com.github.eendroroy` to `io.github.eendroroy`

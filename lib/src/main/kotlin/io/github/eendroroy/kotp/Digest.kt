@@ -9,7 +9,7 @@ package io.github.eendroroy.kotp
 @Deprecated(
     message = "\"Digest\" is deprecated, use \"Algorithm\" instead",
     replaceWith = ReplaceWith("Algorithm", "io.github.eendroroy.kotp.Algorithm"),
-    level = DeprecationLevel.ERROR
+    level = DeprecationLevel.WARNING
 )
 enum class Digest constructor(private val digestName: String) {
     /**

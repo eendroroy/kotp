@@ -1,10 +1,12 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-library`
     `maven-publish`
     signing
     jacoco
 
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "1.6.0"
     id("com.adarshr.test-logger") version "4.0.0"
     id("org.jetbrains.dokka") version "1.9.10"
 }
@@ -20,7 +22,7 @@ buildscript {
 }
 
 group = "io.github.eendroroy"
-version = "2.0.0"
+version = "2.0.1"
 val isReleaseVersion = !"$version".endsWith("SNAPSHOT")
 
 dependencies {
@@ -37,7 +39,12 @@ java {
     withJavadocJar()
 }
 
-kotlin { jvmToolchain(8) }
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs += "-Xjsr305=strict"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
 
 tasks.named<Jar>("javadocJar") {
     from(tasks.named("dokkaJavadoc"))

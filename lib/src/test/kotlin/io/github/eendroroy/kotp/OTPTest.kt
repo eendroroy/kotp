@@ -14,9 +14,9 @@ import java.lang.IllegalArgumentException
 class OTPTest {
     @TestFactory
     fun testOtpGenerationUsingDigest(): Collection<DynamicTest?> {
-        return Algorithm.entries.map { digest ->
-            DynamicTest.dynamicTest("testOtpGenerationUsing => ${digest.name}") {
-                val otp = OTP(secret = Secret("secret"), algorithm = digest).generateOtp(123L)
+        return Algorithm.values().map { algorithm ->
+            DynamicTest.dynamicTest("testOtpGenerationUsing => ${algorithm.name}") {
+                val otp = OTP(secret = Secret("secret"), algorithm = algorithm).generateOtp(123L)
                 assertEquals(6, otp.length)
             }
         }
