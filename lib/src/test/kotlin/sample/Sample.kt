@@ -1,4 +1,4 @@
-package io.github.eendroroy.kotp.sample
+package sample
 
 import io.github.eendroroy.kotp.Algorithm
 import io.github.eendroroy.kotp.HOTP
