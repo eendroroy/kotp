@@ -1,16 +1,5 @@
 # kotp
 
-![Java CI with Gradle](https://github.com/eendroroy/kotp/workflows/Tests/badge.svg)
-[![GitHub tag](https://img.shields.io/github/tag/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/tags)
-
-[![Contributors](https://img.shields.io/github/contributors/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/graphs/contributors)
-[![GitHub last commit (branch)](https://img.shields.io/github/last-commit/eendroroy/kotp/master.svg)](https://github.com/eendroroy/kotp)
-[![license](https://img.shields.io/github/license/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/blob/master/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/issues)
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/issues?q=is%3Aissue+is%3Aclosed)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/pulls)
-[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/eendroroy/kotp.svg)](https://github.com/eendroroy/kotp/pulls?q=is%3Apr+is%3Aclosed)
-
 OTP generation and validation library.
 
 * Implements [RFC4226](https://datatracker.ietf.org/doc/html/rfc4226)
